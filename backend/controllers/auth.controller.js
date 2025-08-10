@@ -1,9 +1,9 @@
-import User from "../models/user.model.js";
-
 import jwt from "jsonwebtoken";
 import cloudinary from "../config/cloudinary.js";
 import fs from "fs";
 
+import setCookies from "../utils/jwt.js";
+import User from "../models/user.model.js";
 
 export const signupController = async (req, res)=>{
   try {
@@ -61,4 +61,45 @@ export const signupController = async (req, res)=>{
   }
 }
 
+
+export const loginController = async (req , res)=>{
+  try {
+    const {email , password} = req.body;
+  
+    if(!email || !password){
+      return res.status(400).json({
+        message: "Please fill all the fields",
+      })
+    }
+ 
+    const user = await User.findOne({email}).lean();
+    
+    if(!user){
+      return res.status(400).json({
+        message: "User not found",
+      })
+    }
+    
+    const isMatched = await user.comparePassword(password);
+    if(!isMatched){
+      return res.status(400).json({
+        message: "Invalid email or password",
+      })
+    }
+
+    setCookies(res , user._id);
+    res.status(200).json({
+      success: true,
+      message: "User logged in successfully",
+      user : user,
+    })
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error in login",
+      error : error.message,
+    })
+  }
+}
 

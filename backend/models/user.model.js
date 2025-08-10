@@ -33,6 +33,8 @@ const userSchema = new mongoose.Schema({
       required: [true, "Image url is required"],
     }
   },
+} , {
+  timestamps: true
 });
 
 userSchema.pre("save", async function(next){
@@ -44,7 +46,7 @@ userSchema.pre("save", async function(next){
 });
 
 
-userSchema.methods.comparePassword = async function (candidatePassword){
+userSchema.methods.comparePassword = async function(candidatePassword){
   return await bcrypt.compare(candidatePassword , this.password);
 }
 
