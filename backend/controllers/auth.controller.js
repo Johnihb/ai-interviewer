@@ -72,7 +72,7 @@ export const loginController = async (req , res)=>{
       })
     }
  
-    const user = await User.findOne({email}).lean();
+    const user = await User.findOne({email});
     
     if(!user){
       return res.status(400).json({
