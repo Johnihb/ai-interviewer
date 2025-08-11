@@ -1,5 +1,8 @@
 import multer from "multer";
+import path from "path";
 
-const upload = multer({dest: "uploads/"});
+const __dirname = path.resolve()
+
+const upload = multer({dest: path.join(__dirname +"/backend/uploads/")});
 
 export default upload;
