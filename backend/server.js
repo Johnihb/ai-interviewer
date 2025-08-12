@@ -6,7 +6,7 @@ import cookieParser from "cookie-parser";
 
 // internal imports
 import authRoutes from "./routes/auth.route.js";
-
+import geminiRoutes from "./routes/gemini.route.js";
 
 dotenv.config();
 
@@ -20,9 +20,8 @@ app.use(cookieParser());
 
 
 app.use("/api/v1/auth", authRoutes);
-app.get("/api/v1/auth", (req, res)=>{
-  res.send("Hello from server");
-} );
+app.use("/api/v1/gemini", geminiRoutes);
+
 
 
 app.listen(PORT , async ()=>{
