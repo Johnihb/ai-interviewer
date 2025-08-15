@@ -9,8 +9,10 @@ export default function Navbar() {
   
 
   
-  return (<>
-    <div className=' flex w-full h-[10dvh] justify-between items-center px-4 sm:px-6 lg:px-8 py-3 sm:py-4 lg:py-6 bg-white/5 backdrop-blur-md'>
+  return (
+  <header>  
+  <nav>
+    <div className=' flex w-full h-[10dvh] justify-between items-center px-4 sm:px-6 lg:px-8 py-3 sm:py-4 lg:py-6 bg-white/2 backdrop-blur-md'>
       
       <Link to='/' className="cursor-target">
         <span className="text-lg sm:text-base md:text-xl lg:text-2xl font-bold">Believe Me</span>
@@ -34,8 +36,6 @@ export default function Navbar() {
       </div>
     </div>
 
-
-    
-
-    </>)
+    </nav>
+    </header>)
 }
