@@ -8,7 +8,8 @@ import { loginValidator } from "../validators/login.validator.js";
 const router = express.Router();
 
 
-router.post("/signup",upload.single('image'), validator , validate , signupController);
+// router.post("/signup",upload.single('image'), validator , validate , signupController);
+router.post("/signup" , validator , validate , signupController);
 router.post("/login" ,loginValidator , validate , loginController);
 
 export default router;

@@ -1,13 +1,17 @@
 import React, { useRef } from 'react'
 import  Particles  from '../Reactbits/Particle'
 import ScrollReveal from '../Reactbits/ScrollReveal'
-
+import TargetCursor from '../Reactbits/TargetCursor'
 
 const Homepage = () => {
   const containerRef = useRef(null);
 
   return (
     <main>
+    <TargetCursor 
+        spinDuration={2}
+        hideDefaultCursor={true}
+      />
     <div style={{ width: '100%', height: '100dvh', position: 'relative' }}>
     <Particles
       particleColors={['#ffffff', '#ffffff']}
@@ -28,6 +32,7 @@ const Homepage = () => {
     The AI Interviewer
   </h2>
   <button className="
+  cursor-target
   h-6 w-22 sm:h-9 sm:w-32 
   md:h-12 md:w-44
   bg-transparent

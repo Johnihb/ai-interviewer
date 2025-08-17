@@ -30,6 +30,7 @@ export const signupController = async (req, res)=>{
       })
     }
 
+    /*
     if(!req.file){
       return res.status(400).json({
         message: "Please upload a profile picture",
@@ -37,11 +38,13 @@ export const signupController = async (req, res)=>{
     }
     const response = await cloudinary.uploader.upload( req.file.path , {"folder": "ai_interviewer"});
     const user = await User.create({name, email, password , image : response ? 
-      {
-        public_id : response.public_id,
+    {
+      public_id : response.public_id,
       url : response.secure_url,
-      } : null
-    });
+    } : null
+  });
+  */
+    const user = await User.create({name, email, password});
     await user.save();
 
     fs.unlinkSync(req.file.path);// delete the temp file 

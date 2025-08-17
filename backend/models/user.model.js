@@ -23,6 +23,7 @@ const userSchema = new mongoose.Schema({
     minlength: [6, "Password must be at least 6 characters long"],
     required: true,
   },
+  /*
   image: {
     public_id: {
       type :String ,
@@ -33,6 +34,7 @@ const userSchema = new mongoose.Schema({
       required: [true, "Image url is required"],
     }
   },
+  */
 } , {
   timestamps: true
 });
