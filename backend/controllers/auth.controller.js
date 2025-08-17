@@ -6,6 +6,9 @@ import setCookies from "../utils/jwt.js";
 import User from "../models/user.model.js";
 
 export const signupController = async (req, res)=>{
+  
+  console.log("user is here")
+  console.log(req.body)
   try {
     
 
@@ -47,7 +50,7 @@ export const signupController = async (req, res)=>{
     const user = await User.create({name, email, password});
     await user.save();
 
-    fs.unlinkSync(req.file.path);// delete the temp file 
+    // fs.unlinkSync(req.file.path);// delete the temp file 
 
 
     res.status(201).json({
@@ -56,6 +59,7 @@ export const signupController = async (req, res)=>{
       user,
     });
   } catch (error) {
+    console.log(error)
     res.status(500).json({
       success: false,
       message: "Error in signup",

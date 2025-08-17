@@ -1,6 +1,9 @@
 import { useState } from "react"
-import { Eye, EyeOff, User, Mail, Lock, Shield } from "lucide-react"
+import { Eye, EyeOff } from "lucide-react"
 import { Link } from "react-router-dom"
+import {useUserStore} from "../stores/userStore"
+
+
 
 export default function CyberpunkSignup() {
   const [formData, setFormData] = useState({
@@ -12,7 +15,7 @@ export default function CyberpunkSignup() {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-
+  const signup = useUserStore(state=>state.signup);
   const handleInputChange = (e) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
@@ -23,7 +26,7 @@ export default function CyberpunkSignup() {
     setIsLoading(true)
 
     // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    await signup(formData)
 
     console.log("Form submitted:", formData)
     setIsLoading(false)
