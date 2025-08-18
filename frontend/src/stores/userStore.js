@@ -7,19 +7,30 @@ export const useUserStore = create((set) => ({
     loading : false ,
     
     signup : async (formData) => {
-      console.log(import.meta.mode)
         set({ loading: true });
         try {
         const response = await axios.post("/auth/signup", formData);
-        console.log('success')
         toast.success("Signup successful");
         set({ user: response.data.user });
       } catch (error) {
         console.error("Signup failed:", error);
         toast.error("Signup failed");
-        console.log(error)
       }finally {
         set({ loading: false });
       }
-    } 
+    } ,
+
+    login : async(formData) => {
+        set({ loading: true });
+        try {
+        const response = await axios.post("/auth/login", formData);
+        toast.success("Login successful");
+        set({ user: response.data.user });
+      } catch (error) {
+        console.error("Login failed:", error);
+        toast.error("Login failed" , error.message );
+      }finally {
+        set({ loading: false });
+      }
+    }
 }))

@@ -51,7 +51,7 @@ export const signupController = async (req, res)=>{
     await user.save();
 
     // fs.unlinkSync(req.file.path);// delete the temp file 
-
+    setCookies(res , user._id);
 
     res.status(201).json({
       success: true,

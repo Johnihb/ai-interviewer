@@ -4,16 +4,19 @@ import { Toaster } from 'react-hot-toast'
 import Navbar from './components/Navbar'
 import Homepage from './pages/Homepage'
 import Signup from './pages/Signup'
+import { useUserStore } from './stores/userStore'
+import Login from './pages/Login'
 const App = () => {
+  const {user} = useUserStore();
   return (
     <div className='w-full h-[100dvh] bg-black overflow-x-hidden' >
       <Navbar />
     
       <Routes>
         <Route path='/' element={<Homepage />} />
-        {/* <Route path='/login' element={<Login />} />
-        <Route path='*' element={<Navigate to='/' />} /> */}
-        <Route path='/signup' element={<Signup />} />
+        <Route path='/login' element={user ? <Navigate to='/' /> : <Login />} />
+        <Route path='/signup' element={user ? <Navigate to='/' /> : <Signup />} />
+        {/* <Route path="*" element={} /> */}
       </Routes>
       
       <Toaster 
