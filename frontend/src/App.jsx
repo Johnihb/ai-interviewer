@@ -1,4 +1,4 @@
-import React from 'react'
+import {useEffect} from 'react'
 import {  Routes , Route , Navigate } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import Navbar from './components/Navbar'
@@ -7,7 +7,10 @@ import Signup from './pages/Signup'
 import { useUserStore } from './stores/userStore'
 import Login from './pages/Login'
 const App = () => {
-  const {user} = useUserStore();
+  const {user , getUser} = useUserStore();
+  useEffect(() => {
+      getUser();
+  }, []);
   return (
     <div className='w-full h-[100dvh] bg-black overflow-x-hidden' >
       <Navbar />

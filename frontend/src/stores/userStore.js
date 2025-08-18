@@ -5,6 +5,19 @@ import toast  from "react-hot-toast";
 export const useUserStore = create((set) => ({
     user: null,
     loading : false ,
+
+    getUser : async () => {
+        set({ loading: true });
+        try {
+        const response = await axios.get("/auth/me");
+        set({ user: response.data.user });
+      } catch (error) {
+        console.error("Failed to fetch user:", error);
+        toast.error("Failed to fetch user");
+      }finally {
+        set({ loading: false });
+      }
+    } ,
     
     signup : async (formData) => {
         set({ loading: true });

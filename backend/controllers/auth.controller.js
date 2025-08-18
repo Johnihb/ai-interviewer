@@ -110,3 +110,20 @@ export const loginController = async (req , res)=>{
   }
 }
 
+export const getUser = async (req , res)=>{
+    try {
+        const user = req.user;
+        res.status(200).json({
+            success: true,
+            message: "User fetched successfully",
+            user,
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            success: false,
+            message: "Error in fetching user",
+            error : error.message,
+        })
+    }
+}
