@@ -4,8 +4,8 @@ import { verifyToken } from "../middleware/jwt.middleware.js";
 
 const router = express.Router();
 
-router.get("/", verifyToken , getGemini);
+router.post("/question", verifyToken , getGemini);
 
-router.post("/", verifyToken , postGemini);
+router.post("/answer", verifyToken , postGemini);
 
 export default router;

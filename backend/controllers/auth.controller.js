@@ -127,3 +127,24 @@ export const getUser = async (req , res)=>{
         })
     }
 }
+
+export const logoutController = async (req , res)=>{
+  try {
+    await res.clearCookie('token',{
+      sameSite : "Strict",
+      httpOnly : true,
+      secure : process.env.NODE_ENV === "production",
+    });
+    res.status(200).json({
+      success: true,
+      message: "User logged out successfully",
+    })
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({
+      success: false,
+      message: "Error in logging out",
+      error : error.message,
+    })
+  }
+}

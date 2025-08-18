@@ -2,6 +2,7 @@ import React, { useRef } from 'react'
 import  Particles  from '../Reactbits/Particle'
 import ScrollReveal from '../Reactbits/ScrollReveal'
 import TargetCursor from '../Reactbits/TargetCursor'
+import { Link } from 'react-router-dom'
 
 const Homepage = () => {
   const containerRef = useRef(null);
@@ -31,7 +32,7 @@ const Homepage = () => {
   <h2 className="text-sm sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl mt-4">
     The AI Interviewer
   </h2>
-  <button className="
+  <Link to='/signup' className="
   cursor-target
   h-6 w-22 sm:h-9 sm:w-32 
   md:h-12 md:w-44
@@ -46,30 +47,20 @@ const Homepage = () => {
   transform hover:scale-105 active:scale-95
   
   text-sm sm:text-lg md:text-xl      /* font scales up */
-  py-2 sm:py-3 md:py-4               /* vertical padding scales with font */
-  px-6 sm:px-8 md:px-10              /* horizontal padding also scales */
+  grid place-items-center
 ">
   Get Started
-</button>
+</Link >
 
 
 </div>
 
-
   </div>
-  <ScrollReveal
-  scrollContainerRef={containerRef}
-  baseOpacity={0}
-  enableBlur={true}
-  baseRotation={5}
-  blurStrength={10}
-  className="text-center w-full h-[100dvh]"
-  >
-    <h2  className={`my-5 `}>
-      <p className={`text-[clamp(1.6rem,4vw,3rem)] leading-[1.5] font-semibold text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl  `}>When does a man die? When he is hit by a bullet? No! When he suffers a disease? No! When he ate a soup made out of a poisonous mushroom? No! A man dies when he is forgotten!</p>
-    </h2>
 
-</ScrollReveal>
+  
+      <p className={`text-[clamp(1.6rem,4vw,3rem)] leading-[1.5] animate-pulse `}> You are not welcomed here ! Thank You 🥱</p>
+   
+
   </main>
   )
 }

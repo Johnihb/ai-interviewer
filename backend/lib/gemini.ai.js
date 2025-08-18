@@ -24,12 +24,12 @@ export async function getQuestionsArray(skills, experience, count) {
 
 Return the questions in this exact format:
 ["question 1" , "question 2" , "question 3" ,......]
-...
+when you return the questions it is not recommended to use any symbol or special character in the questions. 
+["/question1 /" , "\question2 /" , "question3 /" ,......]
 
 Make sure to generate exactly ${count} questions.
 Make sure the questions are relevant to the candidate's skills and experience level.
 You are encourage to use number in the questions.
-You are not encourage to use any symbol or special character in the questions.
 `;
 
     const result = await model.generateContent(prompt);
@@ -39,9 +39,7 @@ You are not encourage to use any symbol or special character in the questions.
     console.log(response);
     
     return {
-      raw: response,
-      array: response,
-      count: response.length
+      question: response,
     };
     
   } catch (error) {

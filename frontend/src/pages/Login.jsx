@@ -79,14 +79,14 @@ export default function Login() {
 
 
         {/* Sign Up Link */}
-        <Link to='/signup' className="text-center h-12 flex items-center justify-center ">
+         <div className="text-center h-12 flex items-center justify-center ">
           <p className="text-gray-400 text-lg ">
             Don't have an account?{' '}
-            <a href="#" className="text-white underline hover:no-underline transition-all duration-200">
-              Sign up
-            </a>
+          <Link to='/signup' className="text-white underline hover:no-underline transition-all duration-200">
+            Sign up
+          </Link>
           </p>
-        </Link>
+         </div>
       </div>
     </div>
   );
