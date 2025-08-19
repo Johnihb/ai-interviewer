@@ -1,16 +1,22 @@
 import { useState } from 'react';
 import { useGeminiStore } from '../stores/geminiStore';
+import { useNavigate } from 'react-router-dom';
+
+
+
 export default function SkillsForm() {
   const [skills, setSkills] = useState('');
   const [experience, setExperience] = useState('');
   const [count, setCount] = useState('');
   const [difficulty, setDifficulty] = useState('');
   const {getQuestion} = useGeminiStore();
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Form submitted:', { skills, experience, count, difficulty });
     getQuestion({skills , experience , count , difficulty});
+    navigate("/questions");
   };
 
   const handleCancel = () => {
@@ -79,6 +85,7 @@ export default function SkillsForm() {
               value={count}
               onChange={(e) => setCount(e.target.value)}
               placeholder="Number of projects/years"
+              max="10"
               min="0"
               required
               className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 focus:shadow-[0_0_15px_rgba(250,204,21,0.3)] transition-all duration-200 h-10 "

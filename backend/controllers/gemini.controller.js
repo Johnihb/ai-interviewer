@@ -1,4 +1,4 @@
-import {getQuestionsArray} from "../lib/gemini.ai.js";
+import {checkAnswer, getQuestionsArray} from "../lib/gemini.ai.js";
 
 export const getGemini = async (req, res) => {
     console.log("the gemini request has arrive here")
@@ -21,6 +21,27 @@ export const getGemini = async (req, res) => {
     }
 };
 
-export const postGemini = (req, res) => {
-    res.send("Hello from Gemini Controller");
+export const postGemini = async (req, res) => {
+    console.log( "=".repeat(50),"the gemini request has arrive here")
+    console.log(req.body)
+    console.log("=".repeat(50))
+    try {
+        const {question , answer , candidate} = req.body;
+        console.log(question , answer ,candidate)
+        const result = await checkAnswer(question , answer , candidate);
+        
+        res.status(200).json({
+            success: true,
+            message: "Answer checked successfully",
+            result,
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            success: false,
+            message: "Error in checking answer",
+            error: error.message,
+        })
+    }
+    
 };

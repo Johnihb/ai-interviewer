@@ -6,12 +6,17 @@ import Homepage from './pages/Homepage'
 import Signup from './pages/Signup'
 import { useUserStore } from './stores/userStore'
 import Login from './pages/Login'
-import GetQuestionDetails from './pages/SkillsForm'
+import SkillsForm from './pages/SkillsForm'
+import { useGeminiStore } from './stores/geminiStore'
+import Questions from './pages/Questions'
 const App = () => {
   const {user , getUser} = useUserStore();
+  const {question } = useGeminiStore();
   useEffect(() => {
       getUser();
   }, []);
+
+  
   return (
     <div className='w-full h-[100dvh] bg-black overflow-x-hidden' >
       <Navbar />
@@ -20,7 +25,8 @@ const App = () => {
         <Route path='/' element={<Homepage />} />
         <Route path='/login' element={user ? <Navigate to='/' /> : <Login />} />
         <Route path='/signup' element={user ? <Navigate to='/' /> : <Signup />} />
-        <Route path='/getQuestion' element={user ? <GetQuestionDetails /> : <Navigate to='/login' />} />
+        <Route path='/getQuestion' element={user ? <SkillsForm /> : <Navigate to='/login' />} />
+        <Route path='/questions' element={user ? <Questions /> : <Navigate to='/login' />} />
       </Routes>
       
       <Toaster 

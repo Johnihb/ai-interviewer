@@ -5,7 +5,7 @@ import toast  from "react-hot-toast";
 export const useUserStore = create((set) => ({
     user: null,
     loading : false ,
-
+    
     getUser : async () => {
         set({ loading: true });
         try {
