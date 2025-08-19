@@ -5,11 +5,8 @@ const Questions = () => {
   const [answer , setAnswer] = useState({});
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(answer);
     postAnswer(answer);
   }
-  console.log("i am question");
-  console.log(question);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
