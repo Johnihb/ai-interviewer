@@ -1,7 +1,8 @@
 import React ,{useState} from 'react'
 import { useGeminiStore } from '../stores/geminiStore'
+import DataDisplayUI from '../components/DataDisplayUI'
 const Questions = () => {
-  const {question , loading , postAnswer} = useGeminiStore();
+  const {question , loading , postAnswer , feedback} = useGeminiStore();
   const [answer , setAnswer] = useState({});
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -12,9 +13,15 @@ const Questions = () => {
     const { name, value } = e.target;
     setAnswer((prev) => ({ ...prev, [name]: value }));
   };
+
+  console.log("feedback" , feedback)
+
+  if(feedback && feedback.length !== 0){
+    return <DataDisplayUI data={feedback} />
+  }
   return (
     <div className='mt-10'>
-      <h1 className='text-2xl font-medium text-center drop-shadow-[0_0_10px_rgba(34,211,238,0.5)]'>{loading ? "Loading..." : question}</h1>
+      <h1 className='text-2xl font-medium text-center drop-shadow-[0_0_10px_rgba(34,211,238,0.5)]'>{feedback ? "Feedback" : "Question"}</h1>
       <form onSubmit={handleSubmit}>
         {
           question && Array.isArray(question) && question.map((quest , index) => (
@@ -24,7 +31,7 @@ const Questions = () => {
             </div>
           ))
         }
-        <button type="submit" className=' bg-cyan-600 hover:bg-cyan-700 text-white font-medium py-3 rounded-lg transition-all duration-200 hover:shadow-[0_0_20px_rgba(34,211,238,0.4)] border border-cyan-500 h-10'>Submit</button>
+        <button type="submit" className=' bg-cyan-600 hover:bg-cyan-700 text-white font-medium py-3 rounded-lg transition-all duration-200 hover:shadow-[0_0_20px_rgba(34,211,238,0.4)] border border-cyan-500 h-10' disabled={loading}>{loading ? "Loading..." : "Submit"}</button>
       </form>
     </div>
   )

@@ -20,16 +20,19 @@ const model = genAI.getGenerativeModel({
 export async function getQuestionsArray(skills, experience, count) {
   try {
 
-    const prompt = `Generate exactly ${count} interview questions for a candidate with these skills: ${skills} and experience: ${experience}.
+    const prompt = `Generate exactly ${count} interview questions for a candidate with the following details  
+- Skills: ${skills}  
+- Experience: ${experience}  
 
-Return the questions in this exact format:
-"question 1" , "question 2" , "question 3" ,......
-when you return the questions it is not recommended to use any symbol or special character in the questions. 
+Rules:  
+1. Return the questions only in this format:  
+   "question 1" , "question 2" , "question 3" , ...  
+2. Do not use any symbol or special character in the questions except numbers and alphabets  
+3. Each question must be relevant to the candidate skills and experience  
+4. Make sure the number of questions generated is exactly equal to ${count}  
+5. You are encouraged to include numbers in the questions for clarity  
 
 
-Make sure to generate exactly ${count} questions.
-Make sure the questions are relevant to the candidate's skills and experience level.
-You are encourage to use number in the questions.
 `;
 
     const result = await model.generateContent(prompt);
@@ -70,18 +73,35 @@ await testArrayFunction();
 
 export const checkAnswer = async (question , answer , candidate) => {
     try {
-      const prompt = ` Suppose you are a interviewer and you were interviewing a candidate with these skills : ${candidate.skill} and experience : ${candidate.experience} and with the number of questions : ${candidate.count} and difficulty : ${candidate.difficulty}. 
-      -You asked the candidate this question : ${question} and the candidate answered : ${answer}. 
-      -Now you have to check if the answer is correct or not according to the skills and experience of the candidate. 
-      -Return the mistakes of the candidate in this format : 
-      -"mistake 1" , "mistake 2" , "mistake 3" ,......  
-      -Return the correct answer of the candidate that he missed in this format : 
-      -"correct answer 1" , "correct answer 2" , "correct answer 3" ,......    
-      -And return the mask of the candidate out of 10 
-      -Atlast suggest him in which section he lacks and which section he excels and needs to focus more on which section/part
-      -You are prohibited to return any symbol or special character in the answer
-      -all together return in this format i.e in the format of array and the mistake , correct and suggestion inside curly braces like
-      -[mask ,{ mistakes1, mistake2 , mistake3 ,...} , {correct answer 1 , correct answer 2 , correct answer 3 ,...} , {suggestion 1 , suggestion 2 , suggestion 3 ,...}] 
+      const prompt = ` You are an interviewer evaluating a candidate.  
+
+Candidate details:  
+- Skills: ${candidate.skill}  
+- Experience: ${candidate.experience}  
+- Number of questions: ${candidate.count}  
+- Difficulty level: ${candidate.difficulty}  
+
+Task:  
+1. You asked the candidate this question: ${question}  
+2. The candidate answered: ${answer}  
+
+Now evaluate strictly based on the candidate's skills and experience.  
+- Identify and return all mistakes in the candidate's answer in this format:  
+  [ mistake1, mistake2, mistake3]   
+- Identify and return the correct points the candidate missed in this format:  
+  [ correct answer1, correct answer2, correct answer3 ]  
+- Give a mask score out of 10 evaluating the correctness of the answer.  
+- Suggest which section the candidate lacks in and which section they excel in. Also, suggest what part they need to focus more on. Return suggestions in this format:  
+  [] suggestion1, suggestion2, suggestion3 ]  
+
+Important Rules:  
+- Do not return any symbols or special characters other than braces and commas.  
+- The final response must always be in this exact array format:  
+  [mask , [mistakes...] , [correct answers...] , [suggestions...]]  
+- Be concise and to the point. No extra jargons .Explain mistakes and correct answers in detail.
+- Dont use "The candidate provided '[object Object]' as an answer" .
+
+
       `        
       const result = await model.generateContent(prompt);
       // const response = result.response.text().map(q => q.trim().replace(/^['"]|['"]$/g, ""));

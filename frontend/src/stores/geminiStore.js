@@ -15,7 +15,7 @@ export const useGeminiStore = create((set,get) => ({
 
 
    getQuestion : async(formData)=>{
-    set({loading : true})
+    set({loading : true , feedback : []})
     try {
       set({candidate : formData})
       const response = await axios.post("/gemini/question" , formData) ;
@@ -33,13 +33,13 @@ export const useGeminiStore = create((set,get) => ({
   },
 
   postAnswer : async(formData)=>{
-    set({loading : true})
+    set({loading : true , feedback : []})
     console.log("i am answer" , formData)
     try {
 
       const response = await axios.post("/gemini/answer" , {question : get().question , answer : formData , candidate : get().candidate}) ;
       let result = response.data.result.split(" ,").map(q => q.trim().replace(/^['"]|['"]$/g, ""));
-      set({ feedback: Array.isArray(result) ? result : [result] , question : [] , answer : [] });
+      set({ feedback: Array.isArray(result) ? result : [result] });
       console.log("i am feedback" , result)
       toast.success("Answer checked successfully");
     } catch (error) {
