@@ -9,6 +9,7 @@ import Login from './pages/Login'
 import SkillsForm from './pages/SkillsForm'
 import { useGeminiStore } from './stores/geminiStore'
 import Questions from './pages/Questions'
+import PageNotFound from './pages/NotFoundPage'
 const App = () => {
   const {user , getUser} = useUserStore();
   const {question } = useGeminiStore();
@@ -27,6 +28,7 @@ const App = () => {
         <Route path='/signup' element={user ? <Navigate to='/' /> : <Signup />} />
         <Route path='/getQuestion' element={user ? <SkillsForm /> : <Navigate to='/login' />} />
         <Route path='/questions' element={user ? <Questions /> : <Navigate to='/login' />} />
+        <Route path='*' element={<PageNotFound />} />
       </Routes>
       
       <Toaster 
