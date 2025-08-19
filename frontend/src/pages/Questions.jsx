@@ -1,8 +1,9 @@
 import React ,{useState} from 'react'
 import { useGeminiStore } from '../stores/geminiStore'
 import DataDisplayUI from '../components/DataDisplayUI'
+import ServerErrorPage from '../components/ServerError';
 const Questions = () => {
-  const {question , loading , postAnswer , feedback} = useGeminiStore();
+  const {question , loading , postAnswer , feedback , statusError} = useGeminiStore();
   const [answer , setAnswer] = useState({});
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -14,14 +15,15 @@ const Questions = () => {
     setAnswer((prev) => ({ ...prev, [name]: value }));
   };
 
-  console.log("feedback" , feedback)
+
+  if(statusError) <ServerErrorPage />
 
   if(feedback && feedback.length !== 0){
     return <DataDisplayUI data={feedback} />
   }
   return (
     <div className='mt-10'>
-      <h1 className='text-2xl font-medium text-center drop-shadow-[0_0_10px_rgba(34,211,238,0.5)]'>{feedback ? "Feedback" : "Question"}</h1>
+      <h1 className='text-2xl font-medium text-center drop-shadow-[0_0_10px_rgba(34,211,238,0.5)]'>{feedback.length !== 0 ? "Feedback" : "Question"}</h1>
       <form onSubmit={handleSubmit}>
         {
           question && Array.isArray(question) && question.map((quest , index) => (
