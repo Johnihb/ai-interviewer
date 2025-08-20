@@ -32,7 +32,7 @@ export default function CyberpunkSignup() {
   }
 
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center p-4">
+    <div className="min-h-[90dvh] bg-black flex items-center justify-center p-4 mt-16">
       <div className="w-full max-w-md bg-gray-900 rounded-lg p-8 border border-gray-700">
         {/* Header */}
         <div className="text-center mb-8">

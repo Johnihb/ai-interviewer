@@ -26,7 +26,7 @@ export async function getQuestionsArray(skills, experience, count) {
 
 Rules:  
 1. Return the questions only in this format:  
-   "question 1" , "question 2" , "question 3" , ...  
+   "question" , "question" , "question" , ...  
 2. Do not use any symbol or special character in the questions except numbers and alphabets  
 3. Each question must be relevant to the candidate skills and experience  
 4. Make sure the number of questions generated is exactly equal to ${count}  
@@ -73,41 +73,81 @@ await testArrayFunction();
 
 export const checkAnswer = async (question , answer , candidate) => {
     try {
-      const prompt = ` You are an interviewer evaluating a candidate.  
+      const prompt = `You are an interviewer evaluating a candidate.The candidate is giving you a written answer from the computer not verbally so please evaluate the answer based on the candidate's skills and experience written by him/her . If the user answer are all correct don't conjustigate to give 10 out of 10
 
-Candidate details:  
-- Skills: ${candidate.skill}  
-- Experience: ${candidate.experience}  
-- Number of questions: ${candidate.count}  
-- Difficulty level: ${candidate.difficulty}  
-
-Task:  
-1. You asked the candidate this question: ${question}  
-2. The candidate answered: ${answer}  
-
-Now evaluate strictly based on the candidate's skills and experience.  
-- Identify and return all mistakes in the candidate's answer in this format:  
-  [ mistake1, mistake2, mistake3]   
-- Identify and return the correct points the candidate missed in this format:  
-  [ correct answer1, correct answer2, correct answer3 ]  
-- Give a mask score out of 10 evaluating the correctness of the answer.  
-- Suggest which section the candidate lacks in and which section they excel in. Also, suggest what part they need to focus more on. Return suggestions in this format:  
-  [] suggestion1, suggestion2, suggestion3 ]  
-
-Important Rules:  
-- Do not return any symbols or special characters other than braces and commas.  
-- The final response must always be in this exact array format:  
-  [mask , [mistakes...] , [correct answers...] , [suggestions...]]  
-- Be concise and to the point. No extra jargons .Explain mistakes and correct answers in detail.
-- Dont use "The candidate provided '[object Object]' as an answer" .
-
-
+      Candidate details:  
+      - Skills: ${candidate.skill}  
+      - Experience: ${candidate.experience}  
+      - Number of questions: ${candidate.count}  
+      - Difficulty level: ${candidate.difficulty}  
+      
+      Task:  
+      1. You asked the candidate this question: ${question}  
+      2. The candidate answered: ${answer}  
+      
+      Now evaluate strictly based on the candidate's skills and experience.  
+      - Identify and return all mistakes in the candidate's answer   
+      - Identify and return the correct points the candidate missed
+      - Give a score out of 10 evaluating the correctness of the answer  
+      - Suggest which section the candidate lacks in and which section they excel in
+      
+      CRITICAL: Return ONLY raw JSON without any markdown formatting, code blocks, or backticks.
+      Do NOT wrap the response in \`\`\`json or any other formatting.
+      Return the response as pure JSON that can be directly parsed.
+      
+      Expected format (return exactly this structure):
+      {
+        "marks": 0,
+        "mistakes": ["mistake1", "mistake2"],
+        "suggestions": ["suggestion1", "suggestion2"]
+      }
+      
+      Important Rules:  
+      - Return ONLY the JSON object, no other text
+      - No markdown formatting or code blocks
+      - No backticks or special characters outside the JSON
+      - Be concise and specific in mistakes and suggestions
+      - Do not reference "[object Object]" in responses
       `        
       const result = await model.generateContent(prompt);
       // const response = result.response.text().map(q => q.trim().replace(/^['"]|['"]$/g, ""));
       console.log(result.response.text());
-      return result.response.text();
+      const response = result.response.text()
+      const json = cleanAndParseJSON(response);
+      return json;
     } catch (error) {
         console.log(error);
     }
+}
+
+function cleanAndParseJSON(response) {
+  try {
+    // Remove markdown code blocks and backticks
+    let cleanResponse = response
+      .replace(/```json\s*/g, '')  // Remove ```json
+      .replace(/```\s*/g, '')      // Remove closing ```
+      .replace(/`/g, '')           // Remove any remaining backticks
+      .trim();                     // Remove whitespace
+    
+    // Find the JSON object bounds
+    const jsonStart = cleanResponse.indexOf('{');
+    const jsonEnd = cleanResponse.lastIndexOf('}');
+    
+    if (jsonStart !== -1 && jsonEnd !== -1) {
+      cleanResponse = cleanResponse.substring(jsonStart, jsonEnd + 1);
+    }
+    
+    // Parse and return the JSON
+    return JSON.parse(cleanResponse);
+  } catch (error) {
+    console.error('Failed to parse JSON:', error);
+    console.error('Original response:', response);
+    
+    // Return a default error response
+    return {
+      marks: 0,
+      mistakes: ["Unable to process the answer"],
+      suggestions: ["Please provide a clear and valid response"]
+    };
+  }
 }

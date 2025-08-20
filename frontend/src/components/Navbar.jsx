@@ -68,7 +68,7 @@ export default function Navbar() {
 
           {/* Desktop Navigation - Logged In */}
           {user && (
-            <div className="hidden md:flex items-center gap-2">
+            <div className="hidden md:flex items-center gap-2 ">
               <NavLink 
                 to="/"
                 icon={<IoHome className="w-5 h-5" />}
@@ -81,12 +81,12 @@ export default function Navbar() {
               />
               <NavLink 
                 to="/dashboard"
-                icon={<MdDashboard className="w-5 h-5" />}
+                icon={<MdDashboard className="w-5 h-5 cursor-" />}
                 text="Dashboard"
               />
               
               {/* User Profile */}
-              <div className="flex items-center gap-2 px-3 py-2 mx-2 bg-cyan-500/10 border border-cyan-500/30 rounded-lg">
+              <div className="flex items-center gap-2 px-3 py-2 mx-2 bg-cyan-500/10 border border-cyan-500/30 rounded-lg cursor-target">
                 <div className="w-7 h-7 bg-gradient-to-br from-green-400 to-cyan-400 rounded-full flex items-center justify-center text-black font-bold text-xs">
                   {user.name?.charAt(0) || 'U'}
                 </div>
@@ -205,7 +205,7 @@ function NavLink({ to, icon, text }) {
   return (
     <Link
       to={to}
-      className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 bg-cyan-500/5 border border-cyan-500/20 text-white hover:bg-cyan-500/15 hover:border-cyan-400/40 hover:shadow-lg hover:shadow-cyan-500/20 hover:-translate-y-0.5 active:scale-95"
+      className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 bg-cyan-500/5 border border-cyan-500/20 text-white hover:bg-cyan-500/15 hover:border-cyan-400/40 hover:shadow-lg hover:shadow-cyan-500/20 hover:-translate-y-0.5 active:scale-95 cursor-target cursor-pointer"
     >
       <span className="hidden lg:block">{text}</span>
       {icon}
@@ -219,6 +219,8 @@ function NavButton({ icon, text, onClick, isLogout = false }) {
     <button
       onClick={onClick}
       className={`
+        cursor-target
+        cursor-pointer
         flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300
         ${isLogout 
           ? 'bg-red-500/5 border border-red-500/30 text-red-400 hover:bg-red-500/10 hover:border-red-400/50 hover:shadow-lg hover:shadow-red-500/20' 
