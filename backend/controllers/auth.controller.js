@@ -53,6 +53,12 @@ export const signupController = async (req, res)=>{
     // fs.unlinkSync(req.file.path);// delete the temp file 
     setCookies(res , user._id);
 
+    user = {
+      name : user.name,
+      email : user.email,
+      _id : user._id,
+    }
+
     res.status(201).json({
       success: true,
       message: "User created successfully",
@@ -95,6 +101,11 @@ export const loginController = async (req , res)=>{
     }
 
     setCookies(res , user._id);
+    user = {
+      name : user.name,
+      email : user.email,
+      _id : user._id,
+    }
     res.status(200).json({
       success: true,
       message: "User logged in successfully",
@@ -113,7 +124,7 @@ export const loginController = async (req , res)=>{
 export const getUser = async (req , res)=>{
     try {
         const user = req.user;
-        res.status(200).json({
+            res.status(200).json({
             success: true,
             message: "User fetched successfully",
             user,

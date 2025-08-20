@@ -75,7 +75,7 @@ export default function Navbar() {
                 text="Home"
               />
               <NavLink 
-                to="/getQuestion"
+                to="/skillsForm"
                 icon={<HiOutlineDocumentText className="w-5 h-5" />}
                 text="Test"
               />
@@ -174,7 +174,7 @@ export default function Navbar() {
                   onClick={closeMobileMenu}
                 />
                 <MobileNavLink 
-                  to="/getQuestion"
+                  to="/skillsForm"
                   icon={<HiOutlineDocumentText className="w-5 h-5" />}
                   text="Test"
                   onClick={closeMobileMenu}

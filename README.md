@@ -259,7 +259,7 @@ The following features are planned but not yet implemented:
 ### 🎨 UI/UX Improvements
 - **Dark/Light Theme Toggle**: Complete theme system
 - **Mobile Responsiveness**: Enhanced mobile experience
-- **Accessibility Features**: WCAG compliance, screen reader support
+- **Accessibility Features**: WCAG compliance, screen reader support , try again button
 - **Advanced Animations**: More sophisticated micro-interactions
 - **Custom Components**: Enhanced form controls, data visualization components
 
@@ -276,6 +276,7 @@ The following features are planned but not yet implemented:
 - **Advanced AI Features**: Voice recognition, sentiment analysis
 - **Caching System**: Redis integration for better performance
 - **Testing Suite**: Comprehensive unit and integration tests
+- **Security Features**: shifting from JWT to OAuth 2.0
 
 ## 🤝 Contributing
 
