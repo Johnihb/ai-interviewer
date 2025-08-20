@@ -3,7 +3,7 @@ import {create} from "zustand";
 import toast from "react-hot-toast";
 
 export const useGeminiStore = create((set,get) => ({
-  statusError : '',
+  statusError : ' ',
   candidate :{
     skill : "" ,
     experience : "" ,
@@ -20,8 +20,9 @@ export const useGeminiStore = create((set,get) => ({
     try {
       set({candidate : formData})
       const response = await axios.post("/gemini/question" , formData) ;
-      let result = response?.data?.question?.split(" ,").map(q => q.trim());
-      result = Array.isArray(result)? result : [result];
+      let result = Array.isArray(response?.data?.question)
+      ? response?.data?.question
+      : (response?.data?.question ? response?.data?.question.split(",").map(q => q.trim()) : []);
       set({ question: result });
 
       toast.success("Question fetched successfully");

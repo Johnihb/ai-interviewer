@@ -12,6 +12,7 @@ const Questions = () => {
   const { question, loading, postAnswer, feedback, statusError, candidate } = useGeminiStore();
   const [answer, setAnswer] = useState({});
 
+  // submit handler 
   const handleSubmit = (e) => {
     e.preventDefault();
     
@@ -48,6 +49,8 @@ const Questions = () => {
     }
   };
 
+
+  // visibility change handler 
   useEffect(() => {
     document.addEventListener("visibilitychange", handleBlur);
     return () => {
@@ -55,11 +58,13 @@ const Questions = () => {
     };
   }, [answer]); // Added answer as dependency
 
+  // input change handler 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setAnswer((prev) => ({ ...prev, [name]: value }));
   };
 
+  // keydown handler 
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && e.ctrlKey) {
       e.preventDefault();
@@ -67,12 +72,17 @@ const Questions = () => {
     }
   };
 
-  if (!statusError || statusError === "Internal Server Error") return <ServerErrorPage />;
 
+  // error display 
+  if (statusError === "Internal Server Error") return <ServerErrorPage />;
+
+  // feedback display 
   if (feedback && feedback.length !== 0) {
     return <DataDisplayUI data={feedback} />;
   }
 
+
+  // questions display 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-slate-900 to-black pt-20 pb-10 px-4">
       {/* Main Container */}
