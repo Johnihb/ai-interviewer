@@ -13,7 +13,7 @@ router.post("/signup" , validator , validate , signupController);
 router.post("/login" ,loginValidator , validate , loginController);
 
 
-router.get("/me" , verifyToken , getUser)
+router.get("/me" , verifyToken , getUser)// get user profile
 router.post('/logout' , verifyToken , logoutController)
 
 export default router;
