@@ -33,7 +33,7 @@ export default function ServerErrorPage() {
   };
 
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center p-6">
+    <div className="min-h-screen bg-black flex items-center justify-center p-6 mt-18">
       <div className="max-w-2xl w-full text-center">
         
         {/* Main Error Illustration */}

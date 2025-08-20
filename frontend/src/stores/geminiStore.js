@@ -20,13 +20,14 @@ export const useGeminiStore = create((set,get) => ({
     try {
       set({candidate : formData})
       const response = await axios.post("/gemini/question" , formData) ;
-      let result = response.data.question.split(" ,").map(q => q.trim().replace(/^["']|["']$/g, ""));
-      set({ question: Array.isArray(result) ? result : [result] });
+      // let result = response?.data?.question?.split(" ,").map(q => q.trim().replace(/^["']|["']$/g, ""));
+      console.log("i am question" , response?.data?.question)
+      set({ question: response?.data?.question });
 
       toast.success("Question fetched successfully");
     } catch (error) {
       console.log("error" , error)
-      if(error.response.status === 500){
+      if(error?.response?.status === 500){
         return set({statusError : "Internal Server Error"})
       }     
       set({question : ['question 1' , 'question 2' , 'question 3']})
@@ -42,13 +43,13 @@ export const useGeminiStore = create((set,get) => ({
     try {
 
       const response = await axios.post("/gemini/answer" , {question : get().question , answer : formData , candidate : get().candidate}) ;
-      let result = response?.data?.result?.split(" ,").map(q => q.trim().replace(/^['"]|['"]$/g, ""));
-      set({ feedback: Array.isArray(result) ? result : [result] });
-      console.log("i am feedback" , result)
+      // let result = response?.data?.result?.split(" ,").map(q => q.trim().replace(/^['"]|['"]$/g, ""));
+      set({ feedback: response?.data?.result });
+      console.log("i am feedback" , response?.data?.result)
       toast.success("Answer checked successfully");
     } catch (error) {
       console.log("error" , error)
-      if(error.response.status === 500){
+      if(error?.response?.status === 500){
         return set({statusError : "Internal Server Error"})
       }
       

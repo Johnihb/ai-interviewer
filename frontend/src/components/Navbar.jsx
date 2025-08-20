@@ -5,175 +5,98 @@ import { SiGnuprivacyguard } from "react-icons/si";
 import { HiOutlineDocumentText } from "react-icons/hi";
 import { MdDashboard } from "react-icons/md";
 import { RiMenu3Line, RiCloseLine } from "react-icons/ri";
-import {useNavigate} from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useUserStore } from "../stores/userStore";
 
-
 export default function Navbar() {
-  
-  // Mock user state - replace with your actual useUserStore
-  const {user , logout} = useUserStore();
+  const { user, logout } = useUserStore();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  const navigate = useNavigate();
-
- 
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
+  };
+
+  const handleLogout = () => {
+    logout();
+    setIsMobileMenuOpen(false);
+  };
+
   return (
-    <header style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1000 }}>
-      <nav style={{
-        background: 'rgba(0, 0, 0, 0.85)',
-        backdropFilter: 'blur(12px)',
-        borderBottom: '1px solid rgba(0, 255, 255, 0.2)',
-        padding: '0',
-        margin: '0'
-      }}>
+    <header className="fixed top-0 left-0 right-0 z-50">
+      <nav className="bg-black/85 backdrop-blur-lg border-b border-cyan-500/20">
         
         {/* Main Navigation Container */}
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          padding: '12px 16px',
-          maxWidth: '1200px',
-          margin: '0 auto',
-          position: 'relative'
-        }}>
+        <div className="flex justify-between items-center px-4 py-3 max-w-7xl mx-auto">
           
           {/* Logo */}
-          <button 
-            onClick={() => navigate('/')} 
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-              background: 'none',
-              border: 'none',
-              color: 'white',
-              cursor: 'pointer',
-              padding: '8px',
-              borderRadius: '8px',
-              transition: 'all 0.3s ease'
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.background = 'rgba(0, 255, 255, 0.1)';
-              e.target.style.transform = 'scale(1.05)';
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.background = 'none';
-              e.target.style.transform = 'scale(1)';
-            }}
+          <Link 
+            to="/" 
+            className="flex items-center gap-3 p-2 rounded-lg transition-all duration-300 hover:bg-cyan-500/10 hover:scale-105 group"
           >
-            <div style={{
-              width: '32px',
-              height: '32px',
-              background: 'linear-gradient(135deg, #00ffff, #ff00ff)',
-              borderRadius: '6px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontWeight: 'bold',
-              fontSize: '14px',
-              color: 'black'
-            }}>
+            <div className="w-8 h-8 bg-gradient-to-br from-cyan-400 to-purple-500 rounded-lg flex items-center justify-center text-black font-bold text-sm shadow-lg">
               BM
             </div>
-            <span style={{
-              fontSize: window.innerWidth > 768 ? '24px' : '20px',
-              fontWeight: 'bold',
-              background: 'linear-gradient(90deg, #ffffff, #00ffff)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text'
-            }}>
+            <span className="text-xl md:text-2xl font-bold bg-gradient-to-r from-white to-cyan-400 bg-clip-text text-transparent">
               Believe Me
             </span>
-          </button>
+          </Link>
 
           {/* Desktop Navigation - Not Logged In */}
           {!user && (
-            <div style={{
-              display: window.innerWidth > 768 ? 'flex' : 'none',
-              alignItems: 'center',
-              gap: '8px'
-            }}>
-              <NavButton 
-                icon={<IoHome size={20} />}
+            <div className="hidden md:flex items-center gap-2">
+              <NavLink 
+                to="/"
+                icon={<IoHome className="w-5 h-5" />}
                 text="Home"
-                onClick={() => navigate('/')} 
               />
-              <NavButton 
-                icon={<CiLogin size={20} />}
+              <NavLink 
+                to="/login"
+                icon={<CiLogin className="w-5 h-5" />}
                 text="Login"
-                onClick={() => navigate('/login')}
               />
-              <NavButton 
-                icon={<SiGnuprivacyguard size={18} />}
+              <NavLink 
+                to="/signup"
+                icon={<SiGnuprivacyguard className="w-4 h-4" />}
                 text="Sign Up"
-                onClick={() => navigate('/signup')}
               />
             </div>
           )}
 
           {/* Desktop Navigation - Logged In */}
           {user && (
-            <div style={{
-              display: window.innerWidth > 768 ? 'flex' : 'none',
-              alignItems: 'center',
-              gap: '8px'
-            }}>
-              <NavButton 
-                icon={<IoHome size={20} />}
+            <div className="hidden md:flex items-center gap-2">
+              <NavLink 
+                to="/"
+                icon={<IoHome className="w-5 h-5" />}
                 text="Home"
-                onClick={() => navigate('/')} 
               />
-              <NavButton 
-                icon={<HiOutlineDocumentText size={20} />}
+              <NavLink 
+                to="/getQuestion"
+                icon={<HiOutlineDocumentText className="w-5 h-5" />}
                 text="Test"
-                onClick={() => navigate('/getQuestion')}
               />
-              <NavButton 
-                icon={<MdDashboard size={20} />}
+              <NavLink 
+                to="/dashboard"
+                icon={<MdDashboard className="w-5 h-5" />}
                 text="Dashboard"
-                onClick={() =>  navigate('/dashboard')}
               />
               
               {/* User Profile */}
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '8px 12px',
-                background: 'rgba(0, 255, 255, 0.1)',
-                border: '1px solid rgba(0, 255, 255, 0.3)',
-                borderRadius: '8px',
-                margin: '0 8px'
-              }}>
-                <div style={{
-                  width: '28px',
-                  height: '28px',
-                  background: 'linear-gradient(135deg, #00ff41, #00ffff)',
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '12px',
-                  fontWeight: 'bold',
-                  color: 'black'
-                }}>
+              <div className="flex items-center gap-2 px-3 py-2 mx-2 bg-cyan-500/10 border border-cyan-500/30 rounded-lg">
+                <div className="w-7 h-7 bg-gradient-to-br from-green-400 to-cyan-400 rounded-full flex items-center justify-center text-black font-bold text-xs">
                   {user.name?.charAt(0) || 'U'}
                 </div>
-                <span style={{ fontSize: '14px', color: '#ffffff' }}>
+                <span className="text-sm text-white font-medium">
                   {user.name || 'User'}
                 </span>
               </div>
               
               <NavButton 
-                icon={<CiLogout size={20} />}
+                icon={<CiLogout className="w-5 h-5" />}
                 text="Logout"
                 onClick={logout}
                 isLogout={true}
@@ -184,203 +107,159 @@ export default function Navbar() {
           {/* Mobile Menu Button */}
           <button
             onClick={toggleMobileMenu}
-            style={{
-              display: window.innerWidth <= 768 ? 'flex' : 'none',
-              alignItems: 'center',
-              justifyContent: 'center',
-              background: 'rgba(0, 255, 255, 0.1)',
-              border: '1px solid rgba(0, 255, 255, 0.3)',
-              borderRadius: '8px',
-              padding: '8px',
-              color: 'white',
-              cursor: 'pointer',
-              transition: 'all 0.3s ease'
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.background = 'rgba(0, 255, 255, 0.2)';
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.background = 'rgba(0, 255, 255, 0.1)';
-            }}
+            className="md:hidden flex items-center justify-center p-2 bg-cyan-500/10 border border-cyan-500/30 rounded-lg text-white transition-all duration-300 hover:bg-cyan-500/20"
           >
-            {isMobileMenuOpen ? <RiCloseLine size={24} /> : <RiMenu3Line size={24} />}
+            {isMobileMenuOpen ? (
+              <RiCloseLine className="w-6 h-6" />
+            ) : (
+              <RiMenu3Line className="w-6 h-6" />
+            )}
           </button>
         </div>
 
         {/* Mobile Menu */}
-        <div style={{
-          display: window.innerWidth <= 768 && isMobileMenuOpen ? 'block' : 'none',
-          background: 'rgba(0, 0, 0, 0.95)',
-          borderTop: '1px solid rgba(0, 255, 255, 0.2)',
-          padding: '16px',
-          animation: isMobileMenuOpen ? 'slideDown 0.3s ease' : 'slideUp 0.3s ease'
-        }}>
-          
-          {/* Mobile Menu - Not Logged In */}
-          {!user && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              <MobileNavButton 
-                icon={<IoHome size={20} />}
-                text="Home"
-                onClick={() => navigate('/')} 
-              />
-              <MobileNavButton 
-                icon={<CiLogin size={20} />}
-                text="Login"
-                onClick={() => navigate('/login')}
-              />
-              <MobileNavButton 
-                icon={<SiGnuprivacyguard size={18} />}
-                text="Sign Up"
-                onClick={() => navigate('/signup')}
-              />
-            </div>
-          )}
-
-          {/* Mobile Menu - Logged In */}
-          {user && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {/* User Info */}
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                padding: '12px',
-                background: 'rgba(0, 255, 255, 0.1)',
-                border: '1px solid rgba(0, 255, 255, 0.3)',
-                borderRadius: '8px',
-                marginBottom: '8px'
-              }}>
-                <div style={{
-                  width: '36px',
-                  height: '36px',
-                  background: 'linear-gradient(135deg, #00ff41, #00ffff)',
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '14px',
-                  fontWeight: 'bold',
-                  color: 'black'
-                }}>
-                  {user.name?.charAt(0) || 'U'}
-                </div>
-                <div>
-                  <div style={{ color: 'white', fontWeight: 'bold', fontSize: '16px' }}>
-                    {user.name || 'User'}
-                  </div>
-                  <div style={{ color: '#00ffff', fontSize: '14px' }}>
-                    {user.email || 'user@example.com'}
-                  </div>
-                </div>
+        <div className={`md:hidden transition-all duration-300 ease-in-out ${
+          isMobileMenuOpen 
+            ? 'max-h-screen opacity-100 visible' 
+            : 'max-h-0 opacity-0 invisible overflow-hidden'
+        }`}>
+          <div className="bg-black/95 border-t border-cyan-500/20 p-4">
+            
+            {/* Mobile Menu - Not Logged In */}
+            {!user && (
+              <div className="flex flex-col gap-2">
+                <MobileNavLink 
+                  to="/"
+                  icon={<IoHome className="w-5 h-5" />}
+                  text="Home"
+                  onClick={closeMobileMenu}
+                />
+                <MobileNavLink 
+                  to="/login"
+                  icon={<CiLogin className="w-5 h-5" />}
+                  text="Login"
+                  onClick={closeMobileMenu}
+                />
+                <MobileNavLink 
+                  to="/signup"
+                  icon={<SiGnuprivacyguard className="w-4 h-4" />}
+                  text="Sign Up"
+                  onClick={closeMobileMenu}
+                />
               </div>
-              
-              <MobileNavButton 
-                icon={<IoHome size={20} />}
-                text="Home"
-                onClick={() => navigate('/')} 
-              />
-              <MobileNavButton 
-                icon={<HiOutlineDocumentText size={20} />}
-                text="Test"
-                onClick={() => navigate('/getQuestion')}
-              />
-              <MobileNavButton 
-                icon={<MdDashboard size={20} />}
-                text="Dashboard"
-                onClick={() => navigate('/dashboard')}
-              />
-              <MobileNavButton 
-                icon={<CiLogout size={20} />}
-                text="Logout"
-                onClick={logout}
-                isLogout={true}
-              />
-            </div>
-          )}
-        </div>
+            )}
 
-        {/* Demo Toggle (Remove in production) */}
-        <div style={{
-          position: 'fixed',
-          bottom: '20px',
-          right: '20px',
-          zIndex: 1001
-        }}>
-          
+            {/* Mobile Menu - Logged In */}
+            {user && (
+              <div className="flex flex-col gap-2">
+                {/* User Info */}
+                <div className="flex items-center gap-3 p-3 bg-cyan-500/10 border border-cyan-500/30 rounded-lg mb-2">
+                  <div className="w-9 h-9 bg-gradient-to-br from-green-400 to-cyan-400 rounded-full flex items-center justify-center text-black font-bold text-sm">
+                    {user.name?.charAt(0) || 'U'}
+                  </div>
+                  <div className="flex-1">
+                    <div className="text-white font-semibold text-base">
+                      {user.name || 'User'}
+                    </div>
+                    <div className="text-cyan-400 text-sm">
+                      {user.email || 'user@example.com'}
+                    </div>
+                  </div>
+                </div>
+                
+                <MobileNavLink 
+                  to="/"
+                  icon={<IoHome className="w-5 h-5" />}
+                  text="Home"
+                  onClick={closeMobileMenu}
+                />
+                <MobileNavLink 
+                  to="/getQuestion"
+                  icon={<HiOutlineDocumentText className="w-5 h-5" />}
+                  text="Test"
+                  onClick={closeMobileMenu}
+                />
+                <MobileNavLink 
+                  to="/dashboard"
+                  icon={<MdDashboard className="w-5 h-5" />}
+                  text="Dashboard"
+                  onClick={closeMobileMenu}
+                />
+                <MobileNavButton 
+                  icon={<CiLogout className="w-5 h-5" />}
+                  text="Logout"
+                  onClick={handleLogout}
+                  isLogout={true}
+                />
+              </div>
+            )}
+          </div>
         </div>
       </nav>
-
     </header>
   );
 }
 
-// Desktop Navigation Button Component
+// Desktop Navigation Link Component
+function NavLink({ to, icon, text }) {
+  return (
+    <Link
+      to={to}
+      className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 bg-cyan-500/5 border border-cyan-500/20 text-white hover:bg-cyan-500/15 hover:border-cyan-400/40 hover:shadow-lg hover:shadow-cyan-500/20 hover:-translate-y-0.5 active:scale-95"
+    >
+      <span className="hidden lg:block">{text}</span>
+      {icon}
+    </Link>
+  );
+}
+
+// Desktop Navigation Button Component (for logout)
 function NavButton({ icon, text, onClick, isLogout = false }) {
   return (
     <button
       onClick={onClick}
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '8px',
-        padding: '8px 12px',
-        background: 'rgba(0, 255, 255, 0.05)',
-        border: `1px solid ${isLogout ? 'rgba(255, 0, 100, 0.3)' : 'rgba(0, 255, 255, 0.2)'}`,
-        borderRadius: '8px',
-        color: isLogout ? '#ff6b9d' : 'white',
-        cursor: 'pointer',
-        fontSize: '14px',
-        fontWeight: '500',
-        transition: 'all 0.3s ease',
-        fontFamily: 'inherit'
-      }}
-      onMouseEnter={(e) => {
-        e.target.style.background = isLogout ? 'rgba(255, 0, 100, 0.1)' : 'rgba(0, 255, 255, 0.15)';
-        e.target.style.transform = 'translateY(-2px)';
-        e.target.style.boxShadow = isLogout ? '0 4px 12px rgba(255, 0, 100, 0.3)' : '0 4px 12px rgba(0, 255, 255, 0.3)';
-      }}
-      onMouseLeave={(e) => {
-        e.target.style.background = 'rgba(0, 255, 255, 0.05)';
-        e.target.style.transform = 'translateY(0)';
-        e.target.style.boxShadow = 'none';
-      }}
+      className={`
+        flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300
+        ${isLogout 
+          ? 'bg-red-500/5 border border-red-500/30 text-red-400 hover:bg-red-500/10 hover:border-red-400/50 hover:shadow-lg hover:shadow-red-500/20' 
+          : 'bg-cyan-500/5 border border-cyan-500/20 text-white hover:bg-cyan-500/15 hover:border-cyan-400/40 hover:shadow-lg hover:shadow-cyan-500/20'
+        }
+        hover:-translate-y-0.5 active:scale-95
+      `}
     >
-      <span style={{ display: window.innerWidth > 1024 ? 'block' : 'none' }}>
-        {text}
-      </span>
+      <span className="hidden lg:block">{text}</span>
       {icon}
     </button>
   );
 }
 
-// Mobile Navigation Button Component
+// Mobile Navigation Link Component
+function MobileNavLink({ to, icon, text, onClick }) {
+  return (
+    <Link
+      to={to}
+      onClick={onClick}
+      className="flex items-center justify-between w-full p-3 rounded-lg text-base font-medium transition-all duration-300 bg-cyan-500/5 border border-cyan-500/20 text-white hover:bg-cyan-500/15 active:scale-95"
+    >
+      <span>{text}</span>
+      {icon}
+    </Link>
+  );
+}
+
+// Mobile Navigation Button Component (for logout)
 function MobileNavButton({ icon, text, onClick, isLogout = false }) {
   return (
     <button
       onClick={onClick}
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        width: '100%',
-        padding: '12px 16px',
-        background: 'rgba(0, 255, 255, 0.05)',
-        border: `1px solid ${isLogout ? 'rgba(255, 0, 100, 0.3)' : 'rgba(0, 255, 255, 0.2)'}`,
-        borderRadius: '8px',
-        color: isLogout ? '#ff6b9d' : 'white',
-        cursor: 'pointer',
-        fontSize: '16px',
-        fontWeight: '500',
-        transition: 'all 0.3s ease',
-        fontFamily: 'inherit'
-      }}
-      onMouseEnter={(e) => {
-        e.target.style.background = isLogout ? 'rgba(255, 0, 100, 0.1)' : 'rgba(0, 255, 255, 0.15)';
-      }}
-      onMouseLeave={(e) => {
-        e.target.style.background = 'rgba(0, 255, 255, 0.05)';
-      }}
+      className={`
+        flex items-center justify-between w-full p-3 rounded-lg text-base font-medium transition-all duration-300
+        ${isLogout 
+          ? 'bg-red-500/5 border border-red-500/30 text-red-400 hover:bg-red-500/10' 
+          : 'bg-cyan-500/5 border border-cyan-500/20 text-white hover:bg-cyan-500/15'
+        }
+        active:scale-95
+      `}
     >
       <span>{text}</span>
       {icon}

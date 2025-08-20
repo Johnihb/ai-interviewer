@@ -61,7 +61,7 @@ export default function NotFoundPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center p-6 relative overflow-hidden">
+    <div className="min-h-screen bg-black flex items-center justify-center p-6 relative overflow-hidden mt-12">
       
       {/* Animated Background Grid */}
       <div className="absolute inset-0 opacity-10">

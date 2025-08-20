@@ -115,6 +115,9 @@ export default function DataDisplayUI({data}) {
     );
   };
 
+  // Convert score from 10-based to percentage for the progress bar
+  const scorePercentage = Math.max((data[0] / 10) * 100, 0);
+
   return (
     <div className="min-h-screen bg-black p-6">
       <div className="max-w-4xl mx-auto">
@@ -144,7 +147,7 @@ export default function DataDisplayUI({data}) {
                 {data[0]}
               </div>
               <div className="text-sm text-gray-400">
-                out of 100
+                out of 10
               </div>
             </div>
           </div>
@@ -152,7 +155,7 @@ export default function DataDisplayUI({data}) {
             <div className="w-full bg-gray-800 rounded-full h-2">
               <div
                 className="bg-gradient-to-r from-red-500 to-yellow-500 h-2 rounded-full transition-all duration-500"
-                style={{ width: `${Math.max(data[0], 0)}%` }}
+                style={{ width: `${scorePercentage}%` }}
               ></div>
             </div>
           </div>

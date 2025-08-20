@@ -1,9 +1,7 @@
 import { useState } from "react"
-import { Eye, EyeOff } from "lucide-react"
+import { Eye, EyeOff, User, Mail, Lock, Shield } from "lucide-react"
 import { Link } from "react-router-dom"
-import {useUserStore} from "../stores/userStore"
-
-
+import { useUserStore } from "../stores/userStore"
 
 export default function CyberpunkSignup() {
   const [formData, setFormData] = useState({
@@ -15,7 +13,8 @@ export default function CyberpunkSignup() {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const signup = useUserStore(state=>state.signup);
+  const signup = useUserStore(state => state.signup)
+
   const handleInputChange = (e) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
@@ -25,7 +24,7 @@ export default function CyberpunkSignup() {
     e.preventDefault()
     setIsLoading(true)
 
-    // Simulate API call
+    // Call the signup function from userStore
     await signup(formData)
 
     console.log("Form submitted:", formData)
@@ -33,155 +32,124 @@ export default function CyberpunkSignup() {
   }
 
   return (
-    <div className="h-[90dvh] overflow-hidden">
-      {/* Matrix Rain Effect */}
-      <div className="matrix-rain">
-        {[...Array(20)].map((_, i) => (
-          <div
-            key={i}
-            className="matrix-char"
-            style={{
-              left: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 4}s`,
-              animationDuration: `${4 + Math.random() * 2}s`
-            }}
-          >
-            {String.fromCharCode(0x30A0 + Math.random() * 96)}
+    <div className="min-h-screen bg-black flex items-center justify-center p-4">
+      <div className="w-full max-w-md bg-gray-900 rounded-lg p-8 border border-gray-700">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-2xl font-bold text-white mb-2">Create Account</h1>
+          <p className="text-gray-400 text-sm">Sign up to get started</p>
+        </div>
+
+        {/* Form */}
+        <div className="space-y-6">
+          {/* Name Field */}
+          <div>
+            <label className="block text-white text-sm font-medium mb-2">
+              <User className="w-4 h-4 inline mr-2" />
+              Full Name
+            </label>
+            <input
+              name="name"
+              type="text"
+              placeholder="Enter your full name"
+              value={formData.name}
+              onChange={handleInputChange}
+              className="w-full px-4 py-3 bg-black border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:border-white focus:outline-none transition-colors"
+            />
           </div>
-        ))}
-      </div>
 
-      <div className="h-screen bg-black neural-grid flex items-center justify-center p-4 relative overflow-hidden">
-        {/* Circuit Lines Background */}
-        <div className="circuit-lines"></div>
-        
-        {/* Data Streams */}
-        <div className="data-stream data-stream-1"></div>
-        <div className="data-stream data-stream-2"></div>
-        <div className="data-stream data-stream-3"></div>
-        
-        {/* Floating Hexagons */}
-        <div className="floating-hex hex-1"></div>
-        <div className="floating-hex hex-2"></div>
-        <div className="floating-hex hex-3"></div>
+          {/* Email Field */}
+          <div>
+            <label className="block text-white text-sm font-medium mb-2">
+              <Mail className="w-4 h-4 inline mr-2" />
+              Email Address
+            </label>
+            <input
+              name="email"
+              type="email"
+              placeholder="Enter your email"
+              value={formData.email}
+              onChange={handleInputChange}
+              className="w-full px-4 py-3 bg-black border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:border-white focus:outline-none transition-colors"
+            />
+          </div>
 
-       {/* Simple Signup Form */}
-       <div className="w-full max-w-lg bg-black/80 backdrop-blur-sm border border-gray-700 rounded-xl p-8 relative z-20">
-         <div className="text-center mb-6">
-           <h2 className="text-3xl font-bold text-white mb-2">Sign Up</h2>
-           <p className="text-base text-gray-400">Create your account</p>
-         </div>
+          {/* Password Field */}
+          <div>
+            <label className="block text-white text-sm font-medium mb-2">
+              <Lock className="w-4 h-4 inline mr-2" />
+              Password
+            </label>
+            <div className="relative">
+              <input
+                name="password"
+                type={showPassword ? "text" : "password"}
+                placeholder="Create a password"
+                value={formData.password}
+                onChange={handleInputChange}
+                className="w-full px-4 py-3 pr-12 bg-black border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:border-white focus:outline-none transition-colors"
+              />
+              <button
+                type="button"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              </button>
+            </div>
+          </div>
 
-         <form onSubmit={handleSubmit} className="space-y-4 flex flex-col gap-4">
-           {/* Name Field */}
-           <div>
-             <label className="block text-white font-mono text-lg mb-3">
-               Full Name
-             </label>
-             <input
-               name="name"
-               type="text"
-               placeholder="Enter your full name"
-               value={formData.name}
-               onChange={handleInputChange}
-               className="w-full px-5 py-4 bg-gray-900 border border-gray-600 rounded-lg text-white text-base placeholder-gray-400 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-colors h-12"
-               required
-             />
-           </div>
+          {/* Confirm Password Field */}
+          <div>
+            <label className="block text-white text-sm font-medium mb-2">
+              <Shield className="w-4 h-4 inline mr-2" />
+              Confirm Password
+            </label>
+            <div className="relative">
+              <input
+                name="confirmPassword"
+                type={showConfirmPassword ? "text" : "password"}
+                placeholder="Confirm your password"
+                value={formData.confirmPassword}
+                onChange={handleInputChange}
+                className="w-full px-4 py-3 pr-12 bg-black border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:border-white focus:outline-none transition-colors"
+              />
+              <button
+                type="button"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              >
+                {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              </button>
+            </div>
+          </div>
 
-           {/* Email Field */}
-           <div >
-             <label className="block text-white font-mono text-lg mb-3">
-               Email Address
-             </label>
-             <input
-               name="email"
-               type="email"
-               placeholder="Enter your email"
-               value={formData.email}
-               onChange={handleInputChange}
-               className="w-full px-5 py-4 bg-gray-900 border border-gray-600 rounded-lg text-white text-base placeholder-gray-400 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-colors h-12"
-               required
-             />
-           </div>
+          {/* Submit Button */}
+          <button
+            onClick={handleSubmit}
+            disabled={isLoading}
+            className="w-full bg-white text-black font-semibold py-3 px-4 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isLoading ? (
+              <div className="flex items-center justify-center gap-2">
+                <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin"></div>
+                Creating Account...
+              </div>
+            ) : (
+              "Create Account"
+            )}
+          </button>
+        </div>
 
-           {/* Password Field */}
-           <div>
-             <label className="block text-white font-mono text-lg mb-3">
-               Password
-             </label>
-             <div className="relative">
-               <input
-                 name="password"
-                 type={showPassword ? "text" : "password"}
-                 placeholder="Enter your password"
-                 value={formData.password}
-                 onChange={handleInputChange}
-                 className="w-full px-5 py-4 bg-gray-900 border border-gray-600 rounded-lg text-white text-base placeholder-gray-400 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-colors pr-14 h-12"
-                 required
-               />
-               <button
-                 type="button"
-                 className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
-                 onClick={() => setShowPassword(!showPassword)}
-               >
-                 {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-               </button>
-             </div>
-           </div>
-
-           {/* Confirm Password Field */}
-           <div>
-             <label className="block text-white font-mono text-lg mb-3">
-               Confirm Password
-             </label>
-             <div className="relative">
-               <input
-                 name="confirmPassword"
-                 type={showConfirmPassword ? "text" : "password"}
-                 placeholder="Confirm your password"
-                 value={formData.confirmPassword}
-                 onChange={handleInputChange}
-                 className="w-full px-5 py-4 bg-gray-900 border border-gray-600 rounded-lg text-white text-base placeholder-gray-400 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-colors pr-14 h-12"
-                 required
-               />
-               <button
-                 type="button"
-                 className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
-                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-               >
-                 {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-               </button>
-             </div>
-           </div>
-
-           {/* Submit Button */}
-           <button
-             type="submit"
-             disabled={isLoading}
-             className="w-full bg-cyan-600 hover:bg-cyan-700 disabled:bg-gray-600 text-white font-medium py-3 px-4 rounded-lg text-base transition-colors duration-200 disabled:cursor-not-allowed mt-6 h-12"
-           >
-             {isLoading ? (
-               <div className="flex items-center justify-center gap-3">
-                 <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                 <span className="text-base">Creating Account...</span>
-               </div>
-             ) : (
-               "Create Account"
-             )}
-           </button>
-         </form>
-
-         {/* Footer */}
-         <div className="text-center mt-6 pt-4 border-t border-gray-700">
-           <p className="text-gray-400 text-lg ">
-             Already have an account?{" "}
-             <Link to="/login" className="text-cyan-400 hover:text-cyan-300 transition-colors font-bold text-lg">
-               Sign In
-             </Link>
-           </p>
-         </div>
-       </div>
+        {/* Footer */}
+        <div className="text-center pt-6 mt-6 border-t border-gray-700">
+          <p className="text-gray-400 text-sm">
+            Already have an account?{" "}
+            <Link to="/signin" className="text-white hover:underline font-medium">
+              Sign In
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   )

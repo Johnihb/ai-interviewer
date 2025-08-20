@@ -57,8 +57,7 @@ const Homepage = () => {
 
   </div>
 
-  
-      <p className={`text-[clamp(1.6rem,4vw,3rem)] leading-[1.5] animate-pulse `}> You are not welcomed here ! Thank You 🥱</p>
+      <p className={`text-[clamp(1.6rem,4vw,3rem)] leading-[1.5] animate-pulse text-white `}> You are not welcomed here ! Thank You 🥱</p>
    
 
   </main>

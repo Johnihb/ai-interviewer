@@ -28,7 +28,7 @@ export default function SkillsForm() {
   };
 
   return (
-    <div className="h-[90dvh] flex items-center justify-center px-6 flex-col gap-4">
+    <div className="min-h-[90dvh] flex items-center justify-center px-6 flex-col gap-4 mt-18">
       <div className="w-full max-w-md  rounded-2xl p-8 border border-gray-700">
         {/* Header */}
         <div className="h-20 mb-6">
@@ -65,7 +65,7 @@ export default function SkillsForm() {
               value={experience}
               onChange={(e) => setExperience(e.target.value)}
               required
-              className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-purple-400 focus:ring-1 focus:ring-purple-400 focus:shadow-[0_0_15px_rgba(168,85,247,0.3)] transition-all duration-200 h-10 text-lg"
+              className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-purple-400 focus:ring-1 focus:ring-purple-400 focus:shadow-[0_0_15px_rgba(168,85,247,0.3)] transition-all duration-200  text-lg"
             >
               <option value="" disabled >Select experience level</option>
               <option value="beginner">Beginner (0-1 years)</option>
@@ -101,7 +101,7 @@ export default function SkillsForm() {
               value={difficulty}
               onChange={(e) => setDifficulty(e.target.value)}
               required
-              className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-pink-400 focus:ring-1 focus:ring-pink-400 focus:shadow-[0_0_15px_rgba(244,114,182,0.3)] transition-all duration-200 text-lg h-10"
+              className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-pink-400 focus:ring-1 focus:ring-pink-400 focus:shadow-[0_0_15px_rgba(244,114,182,0.3)] transition-all duration-200 text-lg "
             >
               <option value="" >Select difficulty level</option>
               <option value="easy">Easy</option>
@@ -115,7 +115,7 @@ export default function SkillsForm() {
           <div className="flex gap-4 text-xl">
             <button
               type="submit"
-              className="flex-1 bg-cyan-600 hover:bg-cyan-700 text-white font-medium py-3 rounded-lg transition-all duration-200 hover:shadow-[0_0_20px_rgba(34,211,238,0.4)] border border-cyan-500 h-10"
+              className="flex-1 bg-cyan-600 hover:bg-cyan-700 text-white font-medium py-3 rounded-lg transition-all duration-200 hover:shadow-[0_0_20px_rgba(34,211,238,0.4)] border border-cyan-500"
             >
               Submit
             </button>
