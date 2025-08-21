@@ -35,7 +35,6 @@ const Questions = () => {
   // visible - when user returns to the page 
   const handleBlur = () => {
     if(document.visibilityState === "hidden") {
-      setTimeout(() => {
         (candidate.difficulty && candidate.difficulty === 'easy') 
           ? toast.error("hey you cheater you cheating", {
               autoClose: 5000,
@@ -45,7 +44,6 @@ const Questions = () => {
               ? toast.error("Don't do that ! ok") 
               : postAnswer(answer)
             );
-      }, 200);
     }
   };
 

@@ -32,7 +32,7 @@ export default function CyberpunkSignup() {
   }
 
   return (
-    <div className="min-h-[90dvh] bg-black flex items-center justify-center p-4 mt-16">
+    <div className="min-h-[90dvh] bg-black flex items-center justify-center p-4 mt-16 ">
       <div className="w-full max-w-md bg-gray-900 rounded-lg p-8 border border-gray-700">
         {/* Header */}
         <div className="text-center mb-8">
@@ -41,16 +41,18 @@ export default function CyberpunkSignup() {
         </div>
 
         {/* Form */}
-        <div className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
           {/* Name Field */}
           <div>
-            <label className="block text-white text-sm font-medium mb-2">
+            <label htmlFor="name" className="block text-white text-sm font-medium mb-2">
               <User className="w-4 h-4 inline mr-2" />
               Full Name
             </label>
             <input
+              id="name"
               name="name"
               type="text"
+              required
               placeholder="Enter your full name"
               value={formData.name}
               onChange={handleInputChange}
@@ -60,13 +62,15 @@ export default function CyberpunkSignup() {
 
           {/* Email Field */}
           <div>
-            <label className="block text-white text-sm font-medium mb-2">
+            <label htmlFor="email" className="block text-white text-sm font-medium mb-2">
               <Mail className="w-4 h-4 inline mr-2" />
               Email Address
             </label>
             <input
+              id="email"
               name="email"
               type="email"
+              required
               placeholder="Enter your email"
               value={formData.email}
               onChange={handleInputChange}
@@ -76,14 +80,17 @@ export default function CyberpunkSignup() {
 
           {/* Password Field */}
           <div>
-            <label className="block text-white text-sm font-medium mb-2">
+            <label htmlFor="password" className="block text-white text-sm font-medium mb-2">
               <Lock className="w-4 h-4 inline mr-2" />
               Password
             </label>
             <div className="relative">
               <input
+                id="password"
                 name="password"
                 type={showPassword ? "text" : "password"}
+                required
+                minLength="6"
                 placeholder="Create a password"
                 value={formData.password}
                 onChange={handleInputChange}
@@ -93,6 +100,7 @@ export default function CyberpunkSignup() {
                 type="button"
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
                 onClick={() => setShowPassword(!showPassword)}
+                aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
               </button>
@@ -101,23 +109,28 @@ export default function CyberpunkSignup() {
 
           {/* Confirm Password Field */}
           <div>
-            <label className="block text-white text-sm font-medium mb-2">
+            <label htmlFor="confirmPassword" className="block text-white text-sm font-medium mb-2">
               <Shield className="w-4 h-4 inline mr-2" />
               Confirm Password
             </label>
             <div className="relative">
               <input
+                id="confirmPassword"
                 name="confirmPassword"
                 type={showConfirmPassword ? "text" : "password"}
+                required
                 placeholder="Confirm your password"
                 value={formData.confirmPassword}
                 onChange={handleInputChange}
+                pattern={formData.password ? `^${formData.password.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$` : ""}
+                title="Passwords must match"
                 className="w-full px-4 py-3 pr-12 bg-black border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:border-white focus:outline-none transition-colors"
               />
               <button
                 type="button"
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
               >
                 {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
               </button>
@@ -126,7 +139,7 @@ export default function CyberpunkSignup() {
 
           {/* Submit Button */}
           <button
-            onClick={handleSubmit}
+            type="submit"
             disabled={isLoading}
             className="w-full bg-white text-black font-semibold py-3 px-4 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
@@ -139,13 +152,13 @@ export default function CyberpunkSignup() {
               "Create Account"
             )}
           </button>
-        </div>
+        </form>
 
         {/* Footer */}
         <div className="text-center pt-6 mt-6 border-t border-gray-700">
           <p className="text-gray-400 text-sm">
             Already have an account?{" "}
-            <Link to="/signin" className="text-white hover:underline font-medium">
+            <Link to="/login" className="text-white hover:underline font-medium">
               Sign In
             </Link>
           </p>

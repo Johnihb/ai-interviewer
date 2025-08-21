@@ -1,19 +1,18 @@
 import { useState } from 'react'
 import { Eye, EyeOff, Mail, Lock } from 'lucide-react'
 import { useUserStore } from '../stores/userStore'
+import { Link } from 'react-router-dom'
 
 export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
 
+  const { login, loading } = useUserStore()
 
-  const {login , loading} = useUserStore();
-
-  const handleLogin = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    login({email , password})
-    
+    await login({ email, password })
   }
 
   return (
@@ -31,15 +30,18 @@ export default function Login() {
 
         {/* Login Card */}
         <div className="bg-gray-900 rounded-xl p-8 border border-gray-700 shadow-2xl">
-          <div className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
             {/* Email Field */}
             <div>
-              <label className="block text-white text-sm font-medium mb-2">
+              <label htmlFor="email" className="block text-white text-sm font-medium mb-2">
                 <Mail className="w-4 h-4 inline mr-2" />
                 Email Address
               </label>
               <input
+                id="email"
+                name="email"
                 type="email"
+                required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
@@ -50,7 +52,7 @@ export default function Login() {
             {/* Password Field */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="text-white text-sm font-medium">
+                <label htmlFor="password" className="text-white text-sm font-medium">
                   <Lock className="w-4 h-4 inline mr-2" />
                   Password
                 </label>
@@ -63,7 +65,10 @@ export default function Login() {
               </div>
               <div className="relative">
                 <input
+                  id="password"
+                  name="password"
                   type={showPassword ? "text" : "password"}
+                  required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your password"
@@ -73,6 +78,7 @@ export default function Login() {
                   type="button"
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
                   onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
@@ -81,7 +87,7 @@ export default function Login() {
 
             {/* Login Button */}
             <button
-              onClick={handleLogin}
+              type="submit"
               disabled={loading}
               className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-600/50 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98]"
             >
@@ -94,18 +100,18 @@ export default function Login() {
                 "Sign In"
               )}
             </button>
-          </div>
+          </form>
         </div>
 
         {/* Sign Up Link */}
         <div className="text-center mt-8">
           <p className="text-gray-400 text-sm">
             Don't have an account?{' '}
-            <button 
+            <Link to="/signup" 
               className="text-blue-400 hover:text-blue-300 font-medium hover:underline transition-all duration-200"
             >
               Create one here
-            </button>
+            </Link>
           </p>
         </div>
       </div>

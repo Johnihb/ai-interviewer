@@ -47,7 +47,7 @@ export const signupController = async (req, res)=>{
     } : null
   });
   */
-    const user = await User.create({name, email, password});
+    let user = await User.create({name, email, password});
     await user.save();
 
     // fs.unlinkSync(req.file.path);// delete the temp file 
@@ -85,7 +85,7 @@ export const loginController = async (req , res)=>{
       })
     }
  
-    const user = await User.findOne({email});
+    let user = await User.findOne({email});
     
     if(!user){
       return res.status(400).json({
@@ -113,6 +113,7 @@ export const loginController = async (req , res)=>{
     })
 
   } catch (error) {
+    console.log(error)
     res.status(500).json({
       success: false,
       message: "Error in login",
