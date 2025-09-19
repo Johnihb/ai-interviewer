@@ -9,6 +9,7 @@ dotenv.config();
   }).catch((err)=>{
     console.log("Error connecting to MongoDB");
     console.log(err);
+    process.exit(1);
   });
 
 export default mongoose;

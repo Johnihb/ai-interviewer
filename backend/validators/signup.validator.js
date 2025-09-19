@@ -1,6 +1,6 @@
 import {check} from "express-validator";
 
-export const validator = [
+export const signUpvalidator = [
   check("name")
     .trim()
     .notEmpty().withMessage("Name is required")

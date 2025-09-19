@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import cloudinary from "../config/cloudinary.js";
 import fs from "fs";
 
-import setCookies from "../utils/jwt.js";
+import setCookies from "../lib/jwt.js";
 import User from "../models/user.model.js";
 
 export const signupController = async (req, res)=>{
