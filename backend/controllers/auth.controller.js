@@ -4,6 +4,11 @@ import fs from "fs";
 
 import setCookies from "../lib/jwt.js";
 import User from "../models/user.model.js";
+import serverResponse from "../lib/action/api_Response.js";
+
+
+
+
 
 export const signupController = async (req, res)=>{
   
@@ -15,23 +20,19 @@ export const signupController = async (req, res)=>{
     const {name, email, password , confirmPassword} = req.body;
 
     if(!name || !email || !password || !confirmPassword){
-      return res.status(400).json({
-        message: "Please fill all the fields",
-      })
+      return res.status(400).json( serverResponse(400 , 302))
     }
 
     const existingUser = await User.findOne({email});
     if(existingUser){
-      return res.status(400).json({
-        message: "User already exists",
-      })
+      return res.status(400).json( serverResponse(400,300))
     }
 
-    if(password !== confirmPassword){
-      return res.status(400).json({
-        message: "Password and confirm password do not match",
-      })
-    }
+    // if(password !== confirmPassword){
+    //   return res.status(400).json({
+    //     message: "Password and confirm password do not match",
+    //   })
+    // }
 
     /*
     if(!req.file){
@@ -59,18 +60,10 @@ export const signupController = async (req, res)=>{
       _id : user._id,
     }
 
-    res.status(201).json({
-      success: true,
-      message: "User created successfully",
-      user,
-    });
+    res.status(201).json(serverResponse(201 ,200 , user));
   } catch (error) {
     console.log(error)
-    res.status(500).json({
-      success: false,
-      message: "Error in signup",
-      error: error.message,
-    });
+    res.status(500).json(serverResponse(500,301));
   }
 }
 
