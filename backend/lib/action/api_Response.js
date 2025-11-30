@@ -13,17 +13,23 @@
 
     const subMessage = {
       1 : "Internal Server Error",
+      200 : "User created successfully",
+      201 : "User logged in successfully",
+      202 : "User logged out successfully",
+      203 : "Quetion fetched successfully",
+      204 : "Answer checked successfully",
       300 : "User already exists",
       301 :"Error in creating user" ,
       302 : "Invalid user credentials",
-      200 : "User created successfully",
+      303 : "Unauthorized user" ,
+      // 401 : 'Error in fetching question'
     }
     
     const defaultResponse =  {
       success:code>=200 && code<300 ,
       message:message[code] || "Unknown Status Code" ,
       status:code,
-      description:subMessage[subcode] || "Unknown Sub Status Code"
+      description:subMessage[subcode] || subcode,
     }
 
 

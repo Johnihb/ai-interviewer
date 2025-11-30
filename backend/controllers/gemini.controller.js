@@ -1,3 +1,4 @@
+import serverResponse from "../lib/action/api_Response.js";
 import {checkAnswer, getQuestionsArray} from "../lib/gemini.ai.js";
 
 export const getGemini = async (req, res) => {
@@ -10,18 +11,10 @@ export const getGemini = async (req, res) => {
         // "How would you design a SQL query to fetch the top 5 highest paid employees" , 
         // "Describe 2 challenges you faced in 2 years of working with React and how you solved them"]
 
-     res.status(200).json({
-        success: true,
-        message: "Questions generated successfully",
-        question,
-     })   
+     res.status(200).json(serverResponse(200 , 203 , question))   
     } catch (error) {
         console.log(error)
-        res.status(500).json({
-            success: false,
-            message: "Error in generating questions",
-            error: error.message,
-        })
+        res.status(500).json(serverResponse(500 , 1))
     }
 };
 
@@ -47,18 +40,10 @@ export const postGemini = async (req, res) => {
           }
         */
         
-        res.status(200).json({
-            success: true,
-            message: "Answer checked successfully",
-            result,
-        })
+        res.status(200).json(serverResponse(200 , 204 , result))
     } catch (error) {
         console.log(error)
-        res.status(500).json({
-            success: false,
-            message: "Error in checking answer",
-            error: error.message,
-        })
+        res.status(500).json(serverResponse(500 , 1))
     }
     
 };

@@ -1,6 +1,6 @@
 import express from "express";
 import { getGemini, postGemini } from "../controllers/gemini.controller.js";
-import { verifyToken } from "../middleware/verify.middleware.js";
+import { verifyToken } from "../middleware/validation-result/verifyToken.middleware.js";
 
 const router = express.Router();
 

@@ -5,10 +5,10 @@ import upload from '../config/multer.js';
 
 // internal modules
 import { loginController, signupController , getUser , logoutController} from "../controllers/auth.controller.js";
-import { signUpvalidator } from "../validators/signup.validator.js";
-import { loginValidator } from "../validators/login.validator.js";
-import { validate } from "../middleware/auth.middleware.js";
-import { verifyToken } from "../middleware/verify.middleware.js";
+import { signUpvalidator } from "../middleware/validators/signup.validator.js";
+import { loginValidator } from "../middleware/validators/login.validator.js";
+import { validate } from "../middleware/validation-result/auth.middleware.js";
+import { verifyToken } from "../middleware/validation-result/verifyToken.middleware.js";
 
 
 
