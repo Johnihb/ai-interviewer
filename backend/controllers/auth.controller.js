@@ -2,10 +2,9 @@ import jwt from "jsonwebtoken";
 import cloudinary from "../config/cloudinary.js";
 import fs from "fs";
 
-import setCookies from "../lib/jwt.js";
 import User from "../models/user.model.js";
 import serverResponse from "../lib/action/api_Response.js";
-
+import setCookies from "../lib/cookie.js";
 
 
 
@@ -73,9 +72,7 @@ export const loginController = async (req , res)=>{
     const {email , password} = req.body;
   
     if(!email || !password){
-      return res.status(400).json({
-        message: "Please fill all the fields",
-      })
+      return res.status(400).json( serverResponse(400 , 302))
     }
  
     let user = await User.findOne({email});
@@ -88,9 +85,7 @@ export const loginController = async (req , res)=>{
     
     const isMatched = await user.comparePassword(password);
     if(!isMatched){
-      return res.status(400).json({
-        message: "Invalid email or password",
-      })
+      return res.status(400).json(400,302)
     }
 
     setCookies(res , user._id);
@@ -99,37 +94,21 @@ export const loginController = async (req , res)=>{
       email : user.email,
       _id : user._id,
     }
-    res.status(200).json({
-      success: true,
-      message: "User logged in successfully",
-      user : user,
-    })
+    res.status(200).json(serverResponse(201 ,200 ,user))
 
   } catch (error) {
     console.log(error)
-    res.status(500).json({
-      success: false,
-      message: "Error in login",
-      error : error.message,
-    })
+    res.status(500).json(serverResponse(500 , 3))
   }
 }
 
 export const getUser = async (req , res)=>{
     try {
-        const user = req.user;
-            res.status(200).json({
-            success: true,
-            message: "User fetched successfully",
-            user,
-        })
+        const {user} = req;
+            res.status(200).json(serverResponse(200,203 , user))
     } catch (error) {
         console.log(error)
-        res.status(500).json({
-            success: false,
-            message: "Error in fetching user",
-            error : error.message,
-        })
+        res.status(500).json(500 , 304)
     }
 }
 
@@ -140,16 +119,9 @@ export const logoutController = async (req , res)=>{
       httpOnly : true,
       secure : process.env.NODE_ENV === "production",
     });
-    res.status(200).json({
-      success: true,
-      message: "User logged out successfully",
-    })
+    res.status(200).json(serverResponse(200 , 201))
   } catch (error) {
     console.log(error)
-    res.status(500).json({
-      success: false,
-      message: "Error in logging out",
-      error : error.message,
-    })
+    res.status(500).json(serverResponse(500 , 2))
   }
 }

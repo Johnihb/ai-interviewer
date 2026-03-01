@@ -12,17 +12,29 @@
     }
 
     const subMessage = {
+
+      //server error
       1 : "Internal Server Error",
+      2 : "Error in loging out",
+      3 : "Error in loging in",
+
+      // successfull
       200 : "User created successfully",
       201 : "User logged in successfully",
       202 : "User logged out successfully",
-      203 : "Quetion fetched successfully",
-      204 : "Answer checked successfully",
+      203 : "User fetched successfully",
+      251 : "Question fetched successfully",
+      252 : "Answer checked successfully",
+
+
+      //error
       300 : "User already exists",
       301 :"Error in creating user" ,
       302 : "Invalid user credentials",
       303 : "Unauthorized user" ,
+      304 : "User not found",
       // 401 : 'Error in fetching question'
+      500 : "Error in processing request",
     }
     
     const defaultResponse =  {

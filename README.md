@@ -102,10 +102,12 @@ ai_interviewer/
 │   ├── routes/              # API routes
 │   │   ├── auth.route.js
 │   │   └── gemini.route.js
-│   ├── middleware/          # Custom middleware
-│   ├── validators/          # Input validation
-│   ├── lib/                 # AI integration
-│   │   └── gemini.ai.js
+│   └── middleware/          # Custom middleware
+│           |── validation-result/          # Input validation result
+│           └── validators/          # Input validation
+│   ├── lib/                
+│   │   └── gemini.ai.js     # AI integration
+│   │   └── jwt.js    
 │   └── utils/               # Utility functions
 └── .env.sample              # Environment variables template
 ```
