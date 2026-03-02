@@ -27,26 +27,7 @@ export const signupController = async (req, res)=>{
       return res.status(400).json( serverResponse(400,300))
     }
 
-    // if(password !== confirmPassword){
-    //   return res.status(400).json({
-    //     message: "Password and confirm password do not match",
-    //   })
-    // }
-
-    /*
-    if(!req.file){
-      return res.status(400).json({
-        message: "Please upload a profile picture",
-      })
-    }
-    const response = await cloudinary.uploader.upload( req.file.path , {"folder": "ai_interviewer"});
-    const user = await User.create({name, email, password , image : response ? 
-    {
-      public_id : response.public_id,
-      url : response.secure_url,
-    } : null
-  });
-  */
+    
     let user = await User.create({name, email, password});
     await user.save();
 

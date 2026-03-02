@@ -13,8 +13,9 @@
   "description": "",
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
-    "@langchain/core": "^1.1.0",
-    "@langchain/google-genai": "^2.0.0",
+    "@langchain/classic": "^1.0.21",
+    "@langchain/core": "^1.1.29",
+    "@langchain/google-genai": "^2.1.22",
     "bcrypt": "^6.0.0",
     "cloudinary": "^2.7.0",
     "cookie-parser": "^1.4.7",
@@ -25,11 +26,12 @@
     "fs": "^0.0.1-security",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
-    "langchain": "^1.1.1",
+    "langchain": "^1.2.28",
     "mongoose": "^8.17.1",
     "morgan": "^1.10.1",
     "multer": "^2.0.2",
-    "remove-markdown": "^0.6.3"
+    "remove-markdown": "^0.6.3",
+    "tesseract.js": "^7.0.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
