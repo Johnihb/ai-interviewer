@@ -12,6 +12,8 @@ const interviewSessionSchema = new mongoose.Schema({
   role:      { type: String, required: true },
   questions: { type: [questionSchema], required: true },
   status:    { type: String, enum: ["pending", "completed"], default: "pending" },
+  cvStatus: { type: String, enum: ["pending", "reviewed"], default: "pending" },
+  qaStatus: { type: String, enum: ["pending", "evaluated"], default: "pending" },
 }, { timestamps: true });
 
 // Auto-delete sessions after 24 hours

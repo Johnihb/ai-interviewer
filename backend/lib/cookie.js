@@ -9,7 +9,7 @@ const setCookies = (res , id) =>{
   }
 
     const token = jwt.sign({id} , process.env.JWT_SECRET , {
-      expiresIn: "1d",
+      expiresIn: "7d",
     });
 
   res.cookie("token" , token , {

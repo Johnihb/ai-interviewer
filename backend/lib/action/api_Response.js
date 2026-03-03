@@ -33,6 +33,9 @@
       302 : "Invalid user credentials",
       303 : "Unauthorized user" ,
       304 : "User not found",
+
+      400:'Please finish the interview session before generating new questions',
+
       // 401 : 'Error in fetching question'
       500 : "Error in processing request",
     }
