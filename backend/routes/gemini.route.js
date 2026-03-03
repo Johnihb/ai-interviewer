@@ -10,7 +10,7 @@ const router = express.Router();
 
 router.post("/question", verifyToken , getGemini);
 router.post("/answer", verifyToken , postGemini);
-router.post("/gemini", multer.single('pdf') , evaluateCV);
-router.post("/vaccancy", verifyToken, multer.single('image') , generateQuestions);
+router.post("/gemini", verifyToken, multer.single('pdf') , evaluateCV);
+router.post("/vacancy", verifyToken, multer.single('image') , generateQuestions);
 router.post('/evaluate-answer', verifyToken, evaluateAnswer);
 export default router;

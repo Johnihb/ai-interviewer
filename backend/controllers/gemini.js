@@ -69,11 +69,14 @@ export const evaluateCV = async (req, res) => {
 
     const tunedResponse = removeMd(llmResponse.content);
 
-    await InterviewSession.findOneAndUpdate(
+    const updatedSession = await InterviewSession.findOneAndUpdate(
       { userId: req.user._id, status: "pending" , cvStatus:"pending" },
       { cvStatus: "reviewed" }
     );
 
+    if (!updatedSession) {
+      return res.status(404).json(serverResponse(404, 404, "No pending CV session found"));
+    }
 
     res.status(200).json(serverResponse(200, 252, tunedResponse));
   } catch (error) {
@@ -97,14 +100,13 @@ export const generateQuestions = async(req,res)=>{
       return res.status(400).json(serverResponse(400,400,"No file or data uploaded"));
     }
 
-    const doesQuestionExits = await InterviewSession.findOne({
+    const doesQuestionExist = await InterviewSession.findOne({
       userId: req.user._id,
       status: "pending",
-    })
+    });
 
-
-    if(doesQuestionExits){
-      return res.status(400).json(serverResponse(400,400));
+    if (doesQuestionExist) {
+      return res.status(400).json(serverResponse(400,400,"A pending interview question already exists for this user"));
     }
 
     let imageData = null;
@@ -162,12 +164,12 @@ OUTPUT FORMAT (strict JSON, no markdown, no extra text):
 
     const llmResponse = await model.invoke([questionSystemPrompt , new HumanMessage("Can you please.Generate the questions now.")]);
     const parsedData= llmResponse.content.replace(/```json|```/gi,"").trim();
+    const parsed = JSON.parse(parsedData);
     
     const questionSession = await InterviewSession.create({
       userId: req.user._id,
-      role: req.body.role || "Software Engineer",
-      questions: JSON.parse(parsedData).questions,
-      role: JSON.parse(parsedData).role,  
+      role: req.body.role || parsed.role || "Software Engineer",
+      questions: parsed.questions,
     });
     return res.status(200).json(serverResponse(200, 254, { sessionId: questionSession._id, questions: questionSession.questions, role: questionSession.role }));
   } catch (error) {
@@ -197,11 +199,15 @@ export const evaluateAnswer = async(req,res)=>{
       userId,
       status: "pending",   
       qaStatus: "pending"
-    })
+    });
+    if (!interviewQuestion) {
+      return res.status(404).json(serverResponse(404,404,"No pending interview session found"));
+    }
 
-    const qa = interviewQuestion.questions.map(question =>{
-      const answer = data.find(answer=>answer.id === question.id);
-      return `Q${question.id} [${question.type}]: ${question.question}\nAnswer: ${answer.answer || "[No answer provided]"}`
+    const qa = (interviewQuestion.questions || []).map(question =>{
+      const answerObj = data.find(answer=>answer.id === question.id);
+      const answerText = answerObj?.answer ?? "[No answer provided]";
+      return `Q${question.id} [${question.type}]: ${question.question}\nAnswer: ${answerText}`
     }).join("\n\n---\n\n")
 
     const EvaluationSystemPrompt = new SystemMessage(`
@@ -236,7 +242,15 @@ OUTPUT FORMAT (strict JSON, no markdown):
     `)
 
     const llmResponse = await model.invoke([EvaluationSystemPrompt, new HumanMessage(`Evaluate these answers:\n\n${qa}`)]);
-    const tunedResponse = removeMd(llmResponse.content);
+    const rawContent = llmResponse.content;
+    const cleanedResponse = rawContent.replace(/```json\s*|```/gi, "").trim();
+    let evaluation;
+    try {
+      evaluation = JSON.parse(cleanedResponse);
+    } catch (err) {
+      console.error("Error parsing evaluation response:", err);
+      return res.status(500).json(serverResponse(500,500,"Invalid response from AI"));
+    }
 
     await InterviewSession.findOneAndUpdate({
       userId,
@@ -244,8 +258,8 @@ OUTPUT FORMAT (strict JSON, no markdown):
       qaStatus:'pending'
     },{
       qaStatus:"evaluated"
-    })
-    res.status(200).json(serverResponse(200, 255,  tunedResponse ));
+    });
+    res.status(200).json(serverResponse(200, 255,  evaluation ));
   } catch (error) {
     console.error("Error evaluating answer:", error);
     res.status(500).json(serverResponse(500, 500));
