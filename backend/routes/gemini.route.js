@@ -1,9 +1,7 @@
 import express from "express";
 import { verifyToken } from "../middleware/validation-result/verifyToken.middleware.js";
-import { evaluateAnswer, evaluateCV, generateQuestions } from "../controllers/gemini.controller.js";
 import  multer  from "../config/multer.js";
-
-
+import { evaluateCV, generateQuestions, evaluateAnswer } from "../controllers/ai/gemini.controller.js";
 
 const router = express.Router();
 
