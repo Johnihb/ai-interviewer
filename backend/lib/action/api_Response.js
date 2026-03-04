@@ -27,6 +27,7 @@
       252 : "Answer checked successfully",
 
 
+
       //error
       300 : "User already exists",
       301 :"Error in creating user" ,
@@ -38,6 +39,7 @@
 
       // 401 : 'Error in fetching question'
       500 : "Error in processing request",
+      501 :'What are you providing the job role or the job description? Please keep it concise (max 20 characters).'
     }
     
     const defaultResponse =  {
