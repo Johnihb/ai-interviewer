@@ -14,7 +14,7 @@ export default function CyberpunkSignup() {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const [usernameExists, setUsernameExists] = useState(false)
+  const [usernameExists, setUsernameExists] = useState(null)
   const signup = useUserStore(state => state.signup)
 
   const handleInputChange = (e) => {
@@ -36,9 +36,12 @@ export default function CyberpunkSignup() {
 
 
   useEffect(()=>{
-    if(formData.name?.length < 3) return 
+    if(formData.name?.length < 3){
+      setUsernameExists(null)
+      return 
+    }
     const timer =setTimeout(() => {
-       axios.post('/auth/check-username' , {name :formData.name})
+       axios.post('/auth/check-username' , {name :formData.name},{timeout:2000})
         .then((response) => {
           if (response.status === 200) {
             console.log('Username is available', response.data);
