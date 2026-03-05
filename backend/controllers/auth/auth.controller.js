@@ -6,8 +6,8 @@ export const signupController = async (req, res) => {
   console.log("user is here");
   console.log(req.body);
   try {
-    const { name, email, password, confirmPassword } = req.body;
-
+    const {  email, password, confirmPassword } = req.body;
+    const name = req.body.name.trim();
     if (!name || !email || !password || !confirmPassword) {
       return res.status(400).json(serverResponse(400, 302));
     }
@@ -89,12 +89,25 @@ export const logoutController = async (req, res) => {
 
 export const checkUsername = async (req, res) => {
   try {
-    const { username } = req.body;
-    const user = await User.findOne({ name: username }).select("name").lean();
 
-    if (user) {
-      return res.status(200).json(serverResponse(200, 300));
+    const name  = req.body.name.trim();
+    if (!name || name.length < 3 ) {
+      return res.status(400).json(serverResponse(400, 302));
+    }else if(name.length > 20){
+      return res.status(400).json(serverResponse(400, 500));
     }
-    return res.status(200).json(serverResponse(404, 304));
-  } catch (error) {}
+
+
+    
+    console.log(name)
+    const user = await User.findOne({ name }).select("name").lean();
+    console.log(user)
+    if (user) {
+      return res.status(200).json(serverResponse(200, 300 , {exist:!!user} ));
+    }
+    return res.status(200).json(serverResponse(404, 304 , {exist:!!user}));
+  } catch (error) {
+    console.log(error);
+    res.status(500).json(serverResponse(500, 304));
+  }
 };

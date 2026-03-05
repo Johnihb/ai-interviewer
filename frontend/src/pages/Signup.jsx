@@ -1,7 +1,8 @@
-import { useState } from "react"
-import { Eye, EyeOff, User, Mail, Lock, Shield } from "lucide-react"
+import { useEffect, useState } from "react"
+import { Eye, EyeOff, User, Mail, Lock, Shield, BadgeCheck, CircleX } from "lucide-react"
 import { Link } from "react-router-dom"
 import { useUserStore } from "../stores/userStore"
+import axios from "../lib/axios"
 
 export default function CyberpunkSignup() {
   const [formData, setFormData] = useState({
@@ -13,6 +14,7 @@ export default function CyberpunkSignup() {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [usernameExists, setUsernameExists] = useState(false)
   const signup = useUserStore(state => state.signup)
 
   const handleInputChange = (e) => {
@@ -31,6 +33,30 @@ export default function CyberpunkSignup() {
     setIsLoading(false)
   }
 
+
+
+  useEffect(()=>{
+    if(formData.name?.length < 3) return 
+    const timer =setTimeout(() => {
+       axios.post('/auth/check-username' , {name :formData.name})
+        .then((response) => {
+          if (response.status === 200) {
+            console.log('Username is available', response.data);
+            setUsernameExists(response.data.user.exist);
+          }
+        }).catch((error) => {
+          console.warn(error);
+        })
+
+      }, 1500);
+      return () => {
+        clearTimeout(timer);
+      };
+
+  },[formData.name])
+
+
+
   return (
     <div className="min-h-[90dvh] bg-black flex items-center justify-center p-4 mt-16 ">
       <div className="w-full max-w-md bg-gray-900 rounded-lg p-8 border border-gray-700">
@@ -46,18 +72,35 @@ export default function CyberpunkSignup() {
           <div>
             <label htmlFor="name" className="block text-white text-sm font-medium mb-2">
               <User className="w-4 h-4 inline mr-2" />
-              Full Name
+              Username
             </label>
             <input
               id="name"
               name="name"
               type="text"
               required
-              placeholder="Enter your full name"
+              placeholder="john doe"
               value={formData.name}
+              maxLength={20}
+              minLength={3}
               onChange={handleInputChange}
               className="w-full px-4 py-3 bg-black border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:border-white focus:outline-none transition-colors"
             />
+            {
+              formData.name?.length > 2 &&  formData.name.length <= 20  && (usernameExists ? (
+                <p className="text-red-500 text-xs mt-2 flex items-center gap-1"><CircleX size={17}/> Username already exists</p>
+              ):
+              (
+                <p className="text-green-500 text-xs mt-2 flex items-center gap-1"><BadgeCheck size={17}/> Username doesn't exist</p>
+              ))
+            }
+
+            {
+              formData.name.length > 20 && (
+                <p className="text-red-500 text-xs mt-2 flex items-center gap-1"><CircleX size={17}/>Only username name allowed not book name</p>
+              )
+            }
+
           </div>
 
           {/* Email Field */}
