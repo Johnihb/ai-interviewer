@@ -96,7 +96,7 @@ export const evaluateCV = async (req, res) => {
 
 export const generateQuestions = async (req, res) => {
   try {
-    if (!req.file?.path && !req.body?.data) {
+    if (!req.file?.path && !req?.body) {
       return res
         .status(400)
         .json(serverResponse(400, 400, "No file or data uploaded"));
@@ -133,21 +133,51 @@ export const generateQuestions = async (req, res) => {
           .status(400)
           .json(serverResponse(400, 400, "Could not extract text from image"));
       }
-    } else if (req.body?.data) {
-      reqData = req.body.data?.trim();
+    } else if (req?.body) {
+      reqData = req?.body;
       if (!reqData) {
-        return res
-          .status(400)
-          .json(serverResponse(400, 400, "No data provided in body"));
+        return res.status(400).json(serverResponse(400, 401));
       }
     }
 
-    const numberOfQuestions = 3;
+    const numberOfQuestions = 10;
+
+    const role = req.body.role || "Software Engineer";
 
     const questionSystemPrompt = new SystemMessage(`
   You are an expert technical interviewer and career coach.
 
-Generate exactly ${numberOfQuestions} interview questions for a candidate applying for the job role .
+Generate exactly ${numberOfQuestions} interview questions for a candidate applying for the ${role} role .
+
+
+TOPICS:
+  If the canditate role is related to computer science, then the topics are:    
+    - Logical
+    - Technical
+    - D.S.A.
+    - System Design
+    - Object Oriented Programming
+    - Best Practices 
+    - Code Quality
+    - Testing
+    - Performance
+    - Security
+    - Scalability
+
+  If the candidate role is related to business or management, then the topics are:
+    - Communication
+    - Leadership
+    - Culture Fit
+
+  If the candidate role is related to sales or marketing, then the topics are:
+    - Sales
+    - Marketing
+
+  If the candidate role is related to customer service or support, then the topics are:
+    - Customer Service
+    - Support
+
+  Therefore Above are just some of the example role and the topics that can be asked.If the role is not listed in the above then the topics can be anything that is related to the role , you don't need to show any mercy to the candidate while generating the questions. 
 
 RULES:
 - Personalize every question using the candidate data provided.
@@ -166,8 +196,8 @@ OUTPUT FORMAT (strict JSON, no markdown, no extra text):
 {
  "role": Candidate's applied job role,    
   "questions": [
-    { "id": 1, "type": "Behavioral", "question": "..." },
-    { "id": 2, "type": "Technical",  "question": "..." }
+    { "id": 1, "type": "logical", "question": "..." },
+    { "id": 2, "type": "technical",  "question": "..." }
   ]
 }
 `);
@@ -181,18 +211,16 @@ OUTPUT FORMAT (strict JSON, no markdown, no extra text):
 
     const questionSession = await InterviewSession.create({
       userId: req.user._id,
-      role: req.body.role || parsed.role || "Software Engineer",
+      role,
       questions: parsed.questions,
     });
-    return res
-      .status(200)
-      .json(
-        serverResponse(200, 254, {
-          sessionId: questionSession._id,
-          questions: questionSession.questions,
-          role: questionSession.role,
-        }),
-      );
+    return res.status(200).json(
+      serverResponse(200, 254, {
+        sessionId: questionSession._id,
+        questions: questionSession.questions,
+        role: questionSession.role,
+      }),
+    );
   } catch (error) {
     console.error("Error creating question session:", error);
     return res.status(500).json(serverResponse(500, 500));
@@ -299,7 +327,3 @@ OUTPUT FORMAT (strict JSON, no markdown):
     res.status(500).json(serverResponse(500, 500));
   }
 };
-
-// ! removemd use in frontend
-
-
