@@ -39,21 +39,16 @@ export const loginController = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    if (!email || !password) {
-      return res.status(400).json(serverResponse(400, 302));
-    }
 
     let user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(400).json({
-        message: "User not found",
-      });
+      return res.status(400).json(serverResponse(400, 301));
     }
 
     const isMatched = await user.comparePassword(password);
     if (!isMatched) {
-      return res.status(400).json(400, 302);
+      return res.status(400).json(serverResponse(400, 302));
     }
 
     setCookies(res, user._id);
@@ -92,3 +87,20 @@ export const logoutController = async (req, res) => {
     res.status(500).json(serverResponse(500, 2));
   }
 };
+
+
+export const checkUsername = async(req , res)=>{
+  try {
+    
+  const {username} = req.body;
+  const user = await User.findOne({name:username}).select("name");
+    
+    
+  if(user){
+    return res.status(200).json(serverResponse(200 , 300))
+  }
+  return res.status(200).json(serverResponse(404 , 304))
+  } catch (error) {
+    
+  }
+}

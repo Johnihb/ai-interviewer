@@ -6,7 +6,7 @@ import { signUpvalidator } from "../middleware/validators/signup.validator.js";
 import { loginValidator } from "../middleware/validators/login.validator.js";
 import { validate } from "../middleware/validation-result/auth.middleware.js";
 import { verifyToken } from "../middleware/validation-result/verifyToken.middleware.js";
-import { getUser, loginController, logoutController, signupController } from "../controllers/auth/auth.controller.js";
+import { checkUsername, getUser, loginController, logoutController, signupController } from "../controllers/auth/auth.controller.js";
 
 
 
@@ -25,5 +25,7 @@ router.post('/logout' , verifyToken , logoutController)
 
 //user controller
 router.get("/me" , verifyToken , getUser)// get user profile
+router.post('/check-username', checkUsername)
+
 
 export default router;
