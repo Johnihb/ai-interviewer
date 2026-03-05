@@ -75,13 +75,14 @@ export const evaluateCV = async (req, res) => {
     const updatedSession = await InterviewSession.findOneAndUpdate(
       { userId: req.user._id, status: "pending", cvStatus: "pending" },
       { cvStatus: "reviewed", cvResult: tunedResponse },
-    );
+      { new: true },
+    ).lean();
 
     if (!updatedSession) {
       return res.status(404).json(serverResponse(404, 1));
     }
 
-    res.status(200).json(serverResponse(200, 252, tunedResponse));
+    res.status(200).json(serverResponse(200, 252, {session : updatedSession, response : tunedResponse}));
   } catch (error) {
     console.error("Error processing CV:", error);
     res.status(500).json(serverResponse(500, 500));
@@ -310,7 +311,7 @@ OUTPUT FORMAT (strict JSON, no markdown):
         .json(serverResponse(500, 500, "Invalid response from AI"));
     }
 
-    await InterviewSession.findOneAndUpdate(
+   const session =  await InterviewSession.findOneAndUpdate(
       {
         userId,
         status: "pending",
@@ -320,8 +321,11 @@ OUTPUT FORMAT (strict JSON, no markdown):
         qaStatus: "evaluated",
         qaResult: cleanedResponse,
       },
-    );
-    res.status(200).json(serverResponse(200, 255, evaluation));
+      {
+        new: true,
+      }
+    ).lean();
+    res.status(200).json(serverResponse(200, 255, {session , response : evaluation}));
   } catch (error) {
     console.error("Error evaluating answer:", error);
     res.status(500).json(serverResponse(500, 500));

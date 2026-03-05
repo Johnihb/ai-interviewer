@@ -39,7 +39,6 @@ export const loginController = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-
     let user = await User.findOne({ email });
 
     if (!user) {
@@ -88,19 +87,14 @@ export const logoutController = async (req, res) => {
   }
 };
 
-
-export const checkUsername = async(req , res)=>{
+export const checkUsername = async (req, res) => {
   try {
-    
-  const {username} = req.body;
-  const user = await User.findOne({name:username}).select("name");
-    
-    
-  if(user){
-    return res.status(200).json(serverResponse(200 , 300))
-  }
-  return res.status(200).json(serverResponse(404 , 304))
-  } catch (error) {
-    
-  }
-}
+    const { username } = req.body;
+    const user = await User.findOne({ name: username }).select("name").lean();
+
+    if (user) {
+      return res.status(200).json(serverResponse(200, 300));
+    }
+    return res.status(200).json(serverResponse(404, 304));
+  } catch (error) {}
+};
