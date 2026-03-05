@@ -7,7 +7,7 @@ export const signupController = async (req, res) => {
   console.log(req.body);
   try {
     const {  email, password, confirmPassword } = req.body;
-    const name = req.body.name.trim();
+    const name = req.body?.name.trim();
     if (!name || !email || !password || !confirmPassword) {
       return res.status(400).json(serverResponse(400, 302));
     }
@@ -90,7 +90,7 @@ export const logoutController = async (req, res) => {
 export const checkUsername = async (req, res) => {
   try {
 
-    const name  = req.body.name.trim();
+    const name  = req.body?.name.trim();
     if (!name || name.length < 3 ) {
       return res.status(400).json(serverResponse(400, 302));
     }else if(name.length > 20){
@@ -103,9 +103,9 @@ export const checkUsername = async (req, res) => {
     const user = await User.findOne({ name }).select("name").lean();
     console.log(user)
     if (user) {
-      return res.status(200).json(serverResponse(200, 300 , {exist:!!user} ));
+      return res.status(200).json(serverResponse(200, 300 , {exist:true} ));
     }
-    return res.status(200).json(serverResponse(404, 304 , {exist:!!user}));
+    return res.status(200).json(serverResponse(404, 304 , {exist:false}));
   } catch (error) {
     console.log(error);
     res.status(500).json(serverResponse(500, 304));
