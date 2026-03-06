@@ -1,10 +1,5 @@
 import React, { useState } from 'react';
-import { IoHome } from "react-icons/io5";
-import { CiLogin, CiLogout } from "react-icons/ci";
-import { SiGnuprivacyguard } from "react-icons/si";
-import { HiOutlineDocumentText } from "react-icons/hi";
-import { MdDashboard } from "react-icons/md";
-import { RiMenu3Line, RiCloseLine } from "react-icons/ri";
+import { Home, LogIn, LogOut, UserPlus, FileText, LayoutDashboard, Menu, X } from 'lucide-react';
 import { Link } from "react-router-dom";
 import { useUserStore } from "../stores/userStore";
 
@@ -27,40 +22,40 @@ export default function Navbar() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50">
-      <nav className="bg-black/85 backdrop-blur-lg border-b border-cyan-500/20">
-        
+      <nav className="bg-black/80 backdrop-blur-xl border-b border-white/[0.06]">
+
         {/* Main Navigation Container */}
-        <div className="flex justify-between items-center px-4 py-3 max-w-7xl mx-auto">
-          
+        <div className="flex justify-between items-center px-5 py-3.5 max-w-7xl mx-auto">
+
           {/* Logo */}
-          <Link 
-            to="/" 
-            className="flex items-center gap-3 p-2 rounded-lg transition-all duration-300 hover:bg-cyan-500/10 hover:scale-105 group"
+          <Link
+            to="/"
+            className="flex items-center gap-3 group"
           >
-            <div className="w-8 h-8 bg-gradient-to-br from-cyan-400 to-purple-500 rounded-lg flex items-center justify-center text-black font-bold text-sm shadow-lg">
+            <div className="w-8 h-8 bg-white/10 border border-white/10 rounded-lg flex items-center justify-center text-white/80 font-semibold text-xs tracking-tight transition-all duration-300 group-hover:bg-white/15 group-hover:border-white/20">
               BM
             </div>
-            <span className="text-xl md:text-2xl font-bold bg-gradient-to-r from-white to-cyan-400 bg-clip-text text-transparent">
-              Believe Me
+            <span className="text-lg font-light tracking-tight text-white">
+              Believe <span className="font-medium">Me</span>
             </span>
           </Link>
 
           {/* Desktop Navigation - Not Logged In */}
           {!user && (
-            <div className="hidden md:flex items-center gap-2">
-              <NavLink 
+            <div className="hidden md:flex items-center gap-1.5">
+              <NavLink
                 to="/"
-                icon={<IoHome className="w-5 h-5" />}
+                icon={<Home className="w-4 h-4" />}
                 text="Home"
               />
-              <NavLink 
+              <NavLink
                 to="/login"
-                icon={<CiLogin className="w-5 h-5" />}
+                icon={<LogIn className="w-4 h-4" />}
                 text="Login"
               />
-              <NavLink 
+              <NavLink
                 to="/signup"
-                icon={<SiGnuprivacyguard className="w-4 h-4" />}
+                icon={<UserPlus className="w-4 h-4" />}
                 text="Sign Up"
               />
             </div>
@@ -68,35 +63,35 @@ export default function Navbar() {
 
           {/* Desktop Navigation - Logged In */}
           {user && (
-            <div className="hidden md:flex items-center gap-2 ">
-              <NavLink 
+            <div className="hidden md:flex items-center gap-1.5">
+              <NavLink
                 to="/"
-                icon={<IoHome className="w-5 h-5" />}
+                icon={<Home className="w-4 h-4" />}
                 text="Home"
               />
-              <NavLink 
+              <NavLink
                 to="/skillsForm"
-                icon={<HiOutlineDocumentText className="w-5 h-5" />}
+                icon={<FileText className="w-4 h-4" />}
                 text="Test"
               />
-              <NavLink 
+              <NavLink
                 to="/dashboard"
-                icon={<MdDashboard className="w-5 h-5 cursor-" />}
+                icon={<LayoutDashboard className="w-4 h-4" />}
                 text="Dashboard"
               />
-              
+
               {/* User Profile */}
-              <div className="flex items-center gap-2 px-3 py-2 mx-2 bg-cyan-500/10 border border-cyan-500/30 rounded-lg cursor-target">
-                <div className="w-7 h-7 bg-gradient-to-br from-green-400 to-cyan-400 rounded-full flex items-center justify-center text-black font-bold text-xs">
+              <div className="flex items-center gap-2.5 px-3 py-2 ml-1 bg-white/[0.04] border border-white/[0.08] rounded-xl">
+                <div className="w-6 h-6 bg-white/15 rounded-full flex items-center justify-center text-white/80 font-medium text-[10px] uppercase">
                   {user.name?.charAt(0) || 'U'}
                 </div>
-                <span className="text-sm text-white font-medium">
+                <span className="text-sm text-white/70 font-light">
                   {user.name || 'User'}
                 </span>
               </div>
-              
-              <NavButton 
-                icon={<CiLogout className="w-5 h-5" />}
+
+              <NavButton
+                icon={<LogOut className="w-4 h-4" />}
                 text="Logout"
                 onClick={logout}
                 isLogout={true}
@@ -107,42 +102,41 @@ export default function Navbar() {
           {/* Mobile Menu Button */}
           <button
             onClick={toggleMobileMenu}
-            className="md:hidden flex items-center justify-center p-2 bg-cyan-500/10 border border-cyan-500/30 rounded-lg text-white transition-all duration-300 hover:bg-cyan-500/20"
+            className="md:hidden flex items-center justify-center w-9 h-9 bg-white/[0.04] border border-white/[0.08] rounded-xl text-neutral-400 transition-all duration-300 hover:bg-white/[0.08] hover:text-white"
           >
             {isMobileMenuOpen ? (
-              <RiCloseLine className="w-6 h-6" />
+              <X className="w-4.5 h-4.5" />
             ) : (
-              <RiMenu3Line className="w-6 h-6" />
+              <Menu className="w-4.5 h-4.5" />
             )}
           </button>
         </div>
 
         {/* Mobile Menu */}
-        <div className={`md:hidden transition-all duration-300 ease-in-out ${
-          isMobileMenuOpen 
-            ? 'max-h-screen opacity-100 visible' 
+        <div className={`md:hidden transition-all duration-300 ease-in-out ${isMobileMenuOpen
+            ? 'max-h-screen opacity-100 visible'
             : 'max-h-0 opacity-0 invisible overflow-hidden'
-        }`}>
-          <div className="bg-black/95 border-t border-cyan-500/20 p-4">
-            
+          }`}>
+          <div className="bg-black/95 backdrop-blur-xl border-t border-white/[0.06] p-4">
+
             {/* Mobile Menu - Not Logged In */}
             {!user && (
-              <div className="flex flex-col gap-2">
-                <MobileNavLink 
+              <div className="flex flex-col gap-1.5">
+                <MobileNavLink
                   to="/"
-                  icon={<IoHome className="w-5 h-5" />}
+                  icon={<Home className="w-4 h-4" />}
                   text="Home"
                   onClick={closeMobileMenu}
                 />
-                <MobileNavLink 
+                <MobileNavLink
                   to="/login"
-                  icon={<CiLogin className="w-5 h-5" />}
+                  icon={<LogIn className="w-4 h-4" />}
                   text="Login"
                   onClick={closeMobileMenu}
                 />
-                <MobileNavLink 
+                <MobileNavLink
                   to="/signup"
-                  icon={<SiGnuprivacyguard className="w-4 h-4" />}
+                  icon={<UserPlus className="w-4 h-4" />}
                   text="Sign Up"
                   onClick={closeMobileMenu}
                 />
@@ -151,42 +145,42 @@ export default function Navbar() {
 
             {/* Mobile Menu - Logged In */}
             {user && (
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-1.5">
                 {/* User Info */}
-                <div className="flex items-center gap-3 p-3 bg-cyan-500/10 border border-cyan-500/30 rounded-lg mb-2">
-                  <div className="w-9 h-9 bg-gradient-to-br from-green-400 to-cyan-400 rounded-full flex items-center justify-center text-black font-bold text-sm">
+                <div className="flex items-center gap-3 p-3.5 bg-white/[0.03] border border-white/[0.08] rounded-xl mb-1.5">
+                  <div className="w-9 h-9 bg-white/10 rounded-full flex items-center justify-center text-white/80 font-medium text-sm uppercase">
                     {user.name?.charAt(0) || 'U'}
                   </div>
-                  <div className="flex-1">
-                    <div className="text-white font-semibold text-base">
+                  <div className="flex-1 min-w-0">
+                    <div className="text-white font-medium text-sm truncate">
                       {user.name || 'User'}
                     </div>
-                    <div className="text-cyan-400 text-sm">
+                    <div className="text-neutral-500 text-xs truncate">
                       {user.email || 'user@example.com'}
                     </div>
                   </div>
                 </div>
-                
-                <MobileNavLink 
+
+                <MobileNavLink
                   to="/"
-                  icon={<IoHome className="w-5 h-5" />}
+                  icon={<Home className="w-4 h-4" />}
                   text="Home"
                   onClick={closeMobileMenu}
                 />
-                <MobileNavLink 
+                <MobileNavLink
                   to="/skillsForm"
-                  icon={<HiOutlineDocumentText className="w-5 h-5" />}
+                  icon={<FileText className="w-4 h-4" />}
                   text="Test"
                   onClick={closeMobileMenu}
                 />
-                <MobileNavLink 
+                <MobileNavLink
                   to="/dashboard"
-                  icon={<MdDashboard className="w-5 h-5" />}
+                  icon={<LayoutDashboard className="w-4 h-4" />}
                   text="Dashboard"
                   onClick={closeMobileMenu}
                 />
-                <MobileNavButton 
-                  icon={<CiLogout className="w-5 h-5" />}
+                <MobileNavButton
+                  icon={<LogOut className="w-4 h-4" />}
                   text="Logout"
                   onClick={handleLogout}
                   isLogout={true}
@@ -205,10 +199,10 @@ function NavLink({ to, icon, text }) {
   return (
     <Link
       to={to}
-      className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 bg-cyan-500/5 border border-cyan-500/20 text-white hover:bg-cyan-500/15 hover:border-cyan-400/40 hover:shadow-lg hover:shadow-cyan-500/20 hover:-translate-y-0.5 active:scale-95 cursor-target cursor-pointer"
+      className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-light transition-all duration-300 text-neutral-400 hover:text-white hover:bg-white/[0.06] active:scale-95"
     >
-      <span className="hidden lg:block">{text}</span>
       {icon}
+      <span className="hidden lg:block">{text}</span>
     </Link>
   );
 }
@@ -219,18 +213,17 @@ function NavButton({ icon, text, onClick, isLogout = false }) {
     <button
       onClick={onClick}
       className={`
-        cursor-target
         cursor-pointer
-        flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300
-        ${isLogout 
-          ? 'bg-red-500/5 border border-red-500/30 text-red-400 hover:bg-red-500/10 hover:border-red-400/50 hover:shadow-lg hover:shadow-red-500/20' 
-          : 'bg-cyan-500/5 border border-cyan-500/20 text-white hover:bg-cyan-500/15 hover:border-cyan-400/40 hover:shadow-lg hover:shadow-cyan-500/20'
+        flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-light transition-all duration-300
+        ${isLogout
+          ? 'text-neutral-500 hover:text-red-400 hover:bg-red-500/[0.06]'
+          : 'text-neutral-400 hover:text-white hover:bg-white/[0.06]'
         }
-        hover:-translate-y-0.5 active:scale-95
+        active:scale-95
       `}
     >
-      <span className="hidden lg:block">{text}</span>
       {icon}
+      <span className="hidden lg:block">{text}</span>
     </button>
   );
 }
@@ -241,7 +234,7 @@ function MobileNavLink({ to, icon, text, onClick }) {
     <Link
       to={to}
       onClick={onClick}
-      className="flex items-center justify-between w-full p-3 rounded-lg text-base font-medium transition-all duration-300 bg-cyan-500/5 border border-cyan-500/20 text-white hover:bg-cyan-500/15 active:scale-95"
+      className="flex items-center justify-between w-full p-3.5 rounded-xl text-sm font-light transition-all duration-200 text-neutral-400 hover:text-white hover:bg-white/[0.04] active:scale-[0.98]"
     >
       <span>{text}</span>
       {icon}
@@ -255,12 +248,12 @@ function MobileNavButton({ icon, text, onClick, isLogout = false }) {
     <button
       onClick={onClick}
       className={`
-        flex items-center justify-between w-full p-3 rounded-lg text-base font-medium transition-all duration-300
-        ${isLogout 
-          ? 'bg-red-500/5 border border-red-500/30 text-red-400 hover:bg-red-500/10' 
-          : 'bg-cyan-500/5 border border-cyan-500/20 text-white hover:bg-cyan-500/15'
+        flex items-center justify-between w-full p-3.5 rounded-xl text-sm font-light transition-all duration-200
+        ${isLogout
+          ? 'text-neutral-500 hover:text-red-400 hover:bg-red-500/[0.04]'
+          : 'text-neutral-400 hover:text-white hover:bg-white/[0.04]'
         }
-        active:scale-95
+        active:scale-[0.98]
       `}
     >
       <span>{text}</span>
