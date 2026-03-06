@@ -110,17 +110,14 @@ export default function CyberpunkSignup() {
               className="w-full px-4 py-3 bg-white/[0.03] border border-white/[0.08] rounded-xl text-white text-sm placeholder-neutral-600 focus:border-white/25 focus:bg-white/[0.05] focus:outline-none focus:ring-1 focus:ring-white/10 transition-all duration-300"
             />
             {
-              formData.name?.length > 2 && formData.name.length <= 20 && (usernameExists ? (
-                <p className="text-red-400/80 text-xs mt-2 flex items-center gap-1.5 animate-in fade-in slide-in-from-top-1 duration-300"><CircleX size={14} /> Username already exists</p>
-              ) :
-                (
-                  <p className="text-emerald-400/80 text-xs mt-2 flex items-center gap-1.5 animate-in fade-in slide-in-from-top-1 duration-300"><BadgeCheck size={14} /> Username is available</p>
-                ))
-            }
-
-            {
-              formData.name.length > 20 && (
-                <p className="text-red-400/80 text-xs mt-2 flex items-center gap-1.5 animate-in fade-in slide-in-from-top-1 duration-300"><CircleX size={14} />Only username name allowed not book name</p>
+              formData.name?.length > 2 && formData.name.length <= 20 && (
+                usernameExists === true ? (
+                  <p className="text-red-400/80 text-xs mt-2 flex items-center gap-1.5 animate-in fade-in slide-in-from-top-1 duration-300"><CircleX size={14} /> Username already exists</p>
+                ) : usernameExists  ? (
+                  <p className="text-neutral-400/80 text-xs mt-2 flex items-center gap-1.5 animate-in fade-in slide-in-from-top-1 duration-300">Checking availability...</p>
+                ) : (
+                   <p className="text-emerald-400/80 text-xs mt-2 flex items-center gap-1.5 animate-in fade-in slide-in-from-top-1 duration-300"><BadgeCheck size={14} /> Username is available</p>
+                )
               )
             }
 
