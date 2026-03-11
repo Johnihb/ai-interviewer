@@ -13,7 +13,6 @@ export const useUserStore = create((set) => ({
         set({ user: response.data.user });
       } catch (error) {
         console.error("Failed to fetch user:", error);
-        toast.error("Failed to fetch user");
       }finally {
         set({ loading: false });
       }

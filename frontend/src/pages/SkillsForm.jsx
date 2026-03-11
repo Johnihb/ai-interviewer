@@ -79,21 +79,21 @@ const ImageMode = () => {
 const Form = ({children})=>{
   const getQuestions = useGeminiStore((state) => state.getQuestions)
    const navigate = useNavigate();
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
 
     const formData = new FormData(e.target);
     const data = Object.fromEntries(formData);
 
     try {
-        getQuestions(data)
+        await getQuestions(data)
+        navigate("/questions");
         
     } catch (error) {
       console.error("Error",error)
       toast.error("Error");
     }
 
-    navigate("/questions");
 
 
   };
@@ -113,7 +113,7 @@ const Form = ({children})=>{
               </button>
               <button
                 type="button"
-                // onClick={handleCancel}
+                onClick={() => navigate(-1)}
                 className="flex-1 bg-transparent border border-red-500 hover:border-red-400 text-red-400 hover:text-red-300 font-medium py-3 rounded-lg transition-all duration-200 hover:shadow-[0_0_20px_rgba(239,68,68,0.3)]"
               >
                 Cancel

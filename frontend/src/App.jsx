@@ -1,13 +1,22 @@
-import {  Routes , Route , Navigate } from 'react-router-dom'
-import { Toaster } from 'react-hot-toast'
-import Navbar from './components/Navbar'
-import Signup from './pages/Signup'
-import { useUserStore } from './stores/userStore'
-import Login from './pages/Login'
-import SkillsForm from './pages/SkillsForm'
-import Questions from './pages/Questions'
-import PageNotFound from './pages/NotFoundPage'
-import { lazy, Suspense, useEffect, useState } from 'react'
+import { Routes, Route, Navigate } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
+import Navbar from "./components/Navbar";
+import { useUserStore } from "./stores/userStore";
+import { lazy, Suspense } from "react";
+import { useEffect } from "react";
+import { useState } from "react";
+
+// Lazy loaded pages
+const Signup = lazy(() => import("./pages/Signup"));
+const Login = lazy(() => import("./pages/Login"));
+const SkillsForm = lazy(() => import("./pages/SkillsForm"));
+const Questions = lazy(() => import("./pages/Questions"));
+const PageNotFound = lazy(() => import("./pages/NotFoundPage"));
+const HomePage = lazy(() => import("./pages/Homepage"));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+
+
+
 const App = () => {
   const user  = useUserStore(state=> state.user);
   const getUser = useUserStore(state=> state.getUser);
@@ -19,9 +28,6 @@ const App = () => {
     getUser().then(()=>{setAuthChecked(true)}).catch((error)=>{console.error('error' , error)});
   }, [getUser]);
 
-
-  const HomePage = lazy(() => import('./pages/Homepage'))
-  const Dashboard = lazy(() => import('./pages/Dashboard')) 
   
   if (loading || !authChecked) return <div>Loading...</div>;
 
