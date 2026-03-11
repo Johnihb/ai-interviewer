@@ -1,11 +1,9 @@
-import React, { useRef } from 'react'
 import  Particles  from '../Reactbits/Particle'
 import ScrollReveal from '../Reactbits/ScrollReveal'
 import TargetCursor from '../Reactbits/TargetCursor'
 import { Link } from 'react-router-dom'
 
 const Homepage = () => {
-  const containerRef = useRef(null);
 
   return (
     <main>

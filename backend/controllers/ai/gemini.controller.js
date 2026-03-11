@@ -103,19 +103,24 @@ export const generateQuestions = async (req, res) => {
         .json(serverResponse(400, 400, "No file or data uploaded"));
     }
 
-    const doesQuestionExist = await InterviewSession.findOne({
+    const alreadyExistQuestion = await InterviewSession.findOne({
       userId: req.user._id,
       status: "pending",
     });
 
-    if (doesQuestionExist) {
+    if (alreadyExistQuestion) {
       return res
-        .status(400)
+        .status(200)
         .json(
           serverResponse(
             400,
             400,
-            "A pending interview question already exists for this user",
+           {
+            sessionId: alreadyExistQuestion._id,
+             questions: alreadyExistQuestion.questions,
+              role: alreadyExistQuestion.role,
+              task:"Please complete the existing one before starting new one.<3"
+           }
           ),
         );
     }
@@ -132,7 +137,7 @@ export const generateQuestions = async (req, res) => {
       if (!imageData) {
         return res
           .status(400)
-          .json(serverResponse(400, 400, "Could not extract text from image"));
+          .json(serverResponse(400, 500  ));
       }
     } else if (req?.body) {
       reqData = req?.body;
@@ -144,6 +149,9 @@ export const generateQuestions = async (req, res) => {
     const numberOfQuestions = 10;
 
     const role = req.body.role || "Software Engineer";
+
+    const jobDescription = imageData || reqData?.description || "";
+
 
     const questionSystemPrompt = new SystemMessage(`
   You are an expert technical interviewer and career coach.
@@ -190,8 +198,11 @@ RULES:
 - ONE question per item. No multi-part questions.
 - Do NOT include answers, hints, or evaluation criteria.
 
-JOB/ROLE DATA:
-${imageData || reqData}
+
+${imageData && 
+  `JOB/ROLE DATA:
+    ${imageData}`
+}
 
 OUTPUT FORMAT (strict JSON, no markdown, no extra text):
 {
