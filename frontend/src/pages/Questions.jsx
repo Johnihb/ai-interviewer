@@ -54,7 +54,7 @@ const Questions = () => {
     return () => {
       document.removeEventListener("visibilitychange", handleBlur);
     };
-  }, [answer]); // Added answer as dependency
+  }, [document.visibilityState]); // Added answer as dependency
 
   // input change handler 
   const handleInputChange = (e) => {
