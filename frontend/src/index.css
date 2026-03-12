@@ -2,5 +2,44 @@
 
 
 body {
-  background-color: black; /* optional if you want a default bg */
+  background-color: black;
+}
+
+/* Ruled-line textarea for the interview sheet */
+.question-textarea {
+  background-image: repeating-linear-gradient(
+    transparent,
+    transparent 1.6rem,
+    rgba(255, 255, 255, 0.2) 1.6rem,
+    rgba(255, 255, 255, 0.2) calc(1.6rem + 1px)
+  );
+  line-height: 1.6rem;
+  padding-top: 0;
+}
+
+.question-textarea:focus {
+  background-image: repeating-linear-gradient(
+    transparent,
+    transparent 1.6rem,
+    rgba(255, 255, 255, 0.5) 1.6rem,
+    rgba(255, 255, 255, 0.5) calc(1.6rem + 1px)
+  );
+}
+
+/* Custom scrollbar */
+.question-textarea::-webkit-scrollbar {
+  width: 4px;
+}
+
+.question-textarea::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.question-textarea::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+}
+
+.question-textarea::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
