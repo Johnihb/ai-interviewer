@@ -7,23 +7,25 @@ import { motion } from 'motion/react';
 import { toast } from 'react-hot-toast';
 
 const Questions = () => {
-  const { questions, loading, postAnswer, feedback, statusError, candidate } = useGeminiStore();
+  const { questions, loading, postAnswer, feedback, statusError } = useGeminiStore();
   const [answer, setAnswer] = useState({});
   const [activeQuestion, setActiveQuestion] = useState(null);
 
   // submit handler 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     // Validate that all questions have answers
-    const unansweredQuestions = questions
 
-    if (unansweredQuestions.length > 0) {
-      toast.error(`Please answer all questions before submitting.`);
+    if (Object.keys(answer)?.length  < 1) {
+      console.log('here')
+      toast.error(`Please answer all atleast one questions before submitting.`);
       return;
     }
+    console.log('answer' , answer)
 
-    postAnswer(answer);
+
+    await postAnswer(answer);
   };
 
   //  visibilitychange -> hidden & visible 
@@ -31,15 +33,8 @@ const Questions = () => {
   // visible - when user returns to the page 
   const handleBlur = () => {
     if(document.visibilityState === "hidden") {
-        (candidate.difficulty && candidate.difficulty === 'easy') 
-          ? toast.error("hey you cheater you cheating", {
-              autoClose: 5000,
-              icon: "😂🤣"
-            }) 
-          : (candidate.difficulty === 'medium' 
-              ? toast.error("Don't do that ! ok") 
-              : postAnswer(answer)
-            );
+      toast.error("Don't do that ! ok")       
+      postAnswer(answer)
     }
   };
 
@@ -196,7 +191,7 @@ const Questions = () => {
                   </div>
 
                   {/* Divider */}
-                  <div className="mx-5 h-px bg-white/[0.5]" />
+                  <div className="mx-5 h-px bg-white/[0.3]" />
 
                   {/* Answer Area */}
                   <div className="p-5 pt-4 relative">
@@ -209,7 +204,7 @@ const Questions = () => {
                       onFocus={() => setActiveQuestion(index)}
                       onBlur={() => setActiveQuestion(null)}
                       placeholder="Write your answer here..."
-                      required
+                      
                       rows={4}
                       className="w-full bg-transparent text-white/80 text-sm leading-relaxed placeholder-neutral-400 focus:outline-none resize-none font-light question-textarea"
                     />

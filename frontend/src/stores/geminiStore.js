@@ -2,10 +2,10 @@ import axios from "../lib/axios";
 import {create} from "zustand";
 import toast from "react-hot-toast";
 
-export const useGeminiStore = create((set,get) => ({
+export const useGeminiStore = create((set) => ({
   statusError : ' ',
   questions : [] ,
-   loading : false ,
+  loading : false ,
   feedback : [],
 
 
@@ -25,7 +25,7 @@ export const useGeminiStore = create((set,get) => ({
       if(error?.response?.status === 500){
         return set({statusError : "Internal Server Error"})
       }     
-      set({questions : ['question 1' , 'question 2' , 'question 3']})
+      set({questions : []})
       toast.error("Failed to fetch question");
     }finally {
       set({loading : false})
@@ -35,7 +35,8 @@ export const useGeminiStore = create((set,get) => ({
   postAnswer : async(formData)=>{
     set({loading : true , feedback : [] , statusError : ' '})
     try {
-      const response = await axios.post("/gemini/answer" , {questions : get().questions , answer : JSON.stringify(formData) , candidate : get().candidate}) ;
+      console.log('formdata :',formData)
+      const response = await axios.post("/gemini/answer" , {answer : formData}) ;
       let result = response?.data?.result
       set({ feedback: result });
       toast.success("Answer checked successfully");
