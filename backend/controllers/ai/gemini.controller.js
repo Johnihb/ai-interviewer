@@ -82,7 +82,14 @@ export const evaluateCV = async (req, res) => {
       return res.status(404).json(serverResponse(404, 1));
     }
 
-    res.status(200).json(serverResponse(200, 252, {session : updatedSession, response : tunedResponse}));
+    res
+      .status(200)
+      .json(
+        serverResponse(200, 252, {
+          session: updatedSession,
+          response: tunedResponse,
+        }),
+      );
   } catch (error) {
     console.error("Error processing CV:", error);
     res.status(500).json(serverResponse(500, 500));
@@ -109,20 +116,14 @@ export const generateQuestions = async (req, res) => {
     });
 
     if (alreadyExistQuestion) {
-      return res
-        .status(200)
-        .json(
-          serverResponse(
-            400,
-            400,
-           {
-            sessionId: alreadyExistQuestion._id,
-             questions: alreadyExistQuestion.questions,
-              role: alreadyExistQuestion.role,
-              task:"Please complete the existing one before starting new one.<3"
-           }
-          ),
-        );
+      return res.status(200).json(
+        serverResponse(400, 253, {
+          sessionId: alreadyExistQuestion._id,
+          questions: alreadyExistQuestion.questions,
+          role: alreadyExistQuestion.role,
+          task: "Please complete the existing one before starting new one.<3",
+        }),
+      );
     }
 
     let imageData = null;
@@ -135,9 +136,7 @@ export const generateQuestions = async (req, res) => {
       await worker.terminate();
 
       if (!imageData) {
-        return res
-          .status(400)
-          .json(serverResponse(400, 500  ));
+        return res.status(400).json(serverResponse(400, 500));
       }
     } else if (req?.body) {
       reqData = req?.body;
@@ -151,7 +150,6 @@ export const generateQuestions = async (req, res) => {
     const role = req.body.role || "Software Engineer";
 
     const jobDescription = imageData || reqData?.description || "";
-
 
     const questionSystemPrompt = new SystemMessage(`
   You are an expert technical interviewer and career coach.
@@ -199,9 +197,10 @@ RULES:
 - Do NOT include answers, hints, or evaluation criteria.
 
 
-${imageData && 
+${
+  jobDescription &&
   `JOB/ROLE DATA:
-    ${imageData}`
+    ${jobDescription}`
 }
 
 OUTPUT FORMAT (strict JSON, no markdown, no extra text):
@@ -245,15 +244,35 @@ OUTPUT FORMAT (strict JSON, no markdown, no extra text):
   }
 };
 
+export const fetchExistingQuestion = async (req, res) => {
+  const userId = req.user._id;
+  try {
+    const dbQuestions = await InterviewSession.findOne({
+      userId,
+      status: "pending",
+    })
+      .select("questions")
+      .lean();
+
+    if (!dbQuestions) {
+      return res.status(404).json(serverResponse(404, 401));
+    }
+
+    return res
+      .status(200)
+      .json(serverResponse(200, 256, { questions: dbQuestions?.questions }));
+  } catch (error) {
+    return res.status(500).json(serverResponse(500, 1));
+  }
+};
+
 export const evaluateAnswer = async (req, res) => {
   try {
-    const { data } = req.body;
+    const data = req.body.answers;
     const userId = req.user._id;
 
-    if (!data) {
-      return res
-        .status(400)
-        .json(serverResponse(400, 400, "No answer data provided"));
+    if (!data || data.length === 0 || !Array.isArray(data)) {
+      return res.status(400).json(serverResponse(400, 400));
     }
 
     const interviewQuestion = await InterviewSession.findOne({
@@ -262,15 +281,14 @@ export const evaluateAnswer = async (req, res) => {
       qaStatus: "pending",
     });
     if (!interviewQuestion) {
-      return res
-        .status(404)
-        .json(serverResponse(404, 404, "No pending interview session found"));
+      return res.status(404).json(serverResponse(404, 404));
     }
 
-    const qa = (interviewQuestion.questions || [])
+    const qa = interviewQuestion.questions
       .map((question) => {
-        const answerObj = data.find((answer) => answer.id === question.id);
-        const answerText = answerObj?.answer ?? "[No answer provided]";
+        const answerObj =
+          data.find((answer) =>String(answer.id) === String(question.id)) || {};
+        const answerText = answerObj?.answer ?? "No answer provided";
         return `Q${question.id} [${question.type}]: ${question.question}\nAnswer: ${answerText}`;
       })
       .join("\n\n---\n\n");
@@ -322,7 +340,7 @@ OUTPUT FORMAT (strict JSON, no markdown):
         .json(serverResponse(500, 500, "Invalid response from AI"));
     }
 
-   const session =  await InterviewSession.findOneAndUpdate(
+    const session = await InterviewSession.findOneAndUpdate(
       {
         userId,
         status: "pending",
@@ -330,13 +348,16 @@ OUTPUT FORMAT (strict JSON, no markdown):
       },
       {
         qaStatus: "evaluated",
-        qaResult: cleanedResponse,
+        qaResult: evaluation,
       },
       {
         new: true,
-      }
+      },
     ).lean();
-    res.status(200).json(serverResponse(200, 255, {session , response : evaluation}));
+
+    res
+      .status(200)
+      .json(serverResponse(200, 255, { session, response: evaluation }));
   } catch (error) {
     console.error("Error evaluating answer:", error);
     res.status(500).json(serverResponse(500, 500));
