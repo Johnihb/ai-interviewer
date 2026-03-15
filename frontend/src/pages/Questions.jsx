@@ -1,45 +1,46 @@
-import React, { useEffect, useState } from 'react';
-import { useGeminiStore } from '../stores/geminiStore';
-import DataDisplayUI from '../components/DataDisplayUI';
-import ServerErrorPage from '../components/ServerError';
-import { FileText, Send, Loader2, Clock, ChevronDown } from 'lucide-react';
-import { motion } from 'motion/react';
-import { toast } from 'react-hot-toast';
+import { useEffect, useState } from "react";
+import { useGeminiStore } from "../stores/geminiStore";
+import DataDisplayUI from "../components/DataDisplayUI";
+import ServerErrorPage from "../components/ServerError";
+import { FileText, Send, Loader2, Clock, ChevronDown } from "lucide-react";
+import { motion } from "motion/react";
+import { toast } from "react-hot-toast";
+import { useRef } from "react";
+import axios from "../lib/axios";
 
 const Questions = () => {
-  const { questions, loading, postAnswer, feedback, statusError } = useGeminiStore();
+  const { questions, postAnswer, feedback, setFeedback ,statusError , setQuestions } =useGeminiStore();
   const [answer, setAnswer] = useState({});
   const [activeQuestion, setActiveQuestion] = useState(null);
-
-  // submit handler 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    // Validate that all questions have answers
-
-    if (Object.keys(answer)?.length  < 1) {
-      console.log('here')
-      toast.error(`Please answer all atleast one questions before submitting.`);
-      return;
+  const answerAlreadySubmittedRef = useRef(false);
+  const [loading , setLoading] = useState(false)
+  useEffect(()=>{
+    if(questions?.length > 0) return 
+    setLoading(true)
+    axios.get('/gemini/existing-question').then(res => {
+      setQuestions(res?.data?.user?.questions)
+      if(res?.data?.user?.qaStatus === 'evaluated'){
+      setFeedback(res?.data?.user?.qaResult)
     }
-    console.log('answer' , answer)
+      return
+    }).catch(()=> toast.error('Failed to fetch questions'))
+    .finally(() => setLoading(false))
+  },[])
 
 
-    await postAnswer(answer);
-  };
-
-  //  visibilitychange -> hidden & visible 
-  // hidden - when user leaves the page 
-  // visible - when user returns to the page 
+    //  visibilitychange -> hidden & visible
+  // hidden - when user leaves the page
+  // visible - when user returns to the page
   const handleBlur = () => {
-    if(document.visibilityState === "hidden") {
-      toast.error("Don't do that ! ok")       
-      postAnswer(answer)
+    if (answerAlreadySubmittedRef.current) return;
+    if (Object.keys(answer).length < 1) return;
+    if (document.visibilityState === "hidden") {
+      toast.error("Don't do that ! ok");
+     handleSubmit(new Event('submit'));
     }
   };
 
-
-  // visibility change handler 
+  // visibility change handler
   useEffect(() => {
     document.addEventListener("visibilitychange", handleBlur);
     return () => {
@@ -47,13 +48,45 @@ const Questions = () => {
     };
   }, [document.visibilityState]);
 
-  // input change handler 
+  if (loading) {
+    return (
+      <div className="min-h-[90dvh] flex items-center justify-center">
+        <Loader2 className="animate-spin w-8 h-8 text-neutral-400" />
+      </div>
+    );
+  }
+  // submit handler
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (Object.keys(answer)?.length < 1) {
+      toast.error(`Please answer all atleast one questions before submitting.`);
+      return;
+    }
+
+    if (answerAlreadySubmittedRef.current) {
+      toast.error(`You have already submitted your answers.`);
+      return;
+    }
+    answerAlreadySubmittedRef.current = true;
+
+    const userAnswerArray = Object.keys(answer).map((key) => ({
+      id: key,
+      answer: answer[key],
+    }));
+
+    await postAnswer(userAnswerArray);
+  };
+
+
+
+  // input change handler
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setAnswer((prev) => ({ ...prev, [name]: value }));
   };
 
-  // keydown handler 
+  // keydown handler
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && e.ctrlKey) {
       e.preventDefault();
@@ -61,21 +94,23 @@ const Questions = () => {
     }
   };
 
-  // Calculate progress
-  const answeredCount = Object.values(answer).filter(a => a && a.trim().length > 0).length;
-  const totalCount = questions.length;
-
-  // error display 
+  // error display
   if (statusError === "Internal Server Error") return <ServerErrorPage />;
 
-  // feedback display 
-  if (feedback && feedback.length !== 0) {
+  // Calculate progress
+  const answeredCount = Object.values(answer).filter(
+    (a) => a && a.trim().length > 0,
+  ).length;
+  const totalCount = questions.length ?? 0;
+  
+
+  // feedback display
+  if (feedback && Object.keys(feedback).length > 0) {
     return <DataDisplayUI data={feedback} />;
   }
 
   return (
     <div className="min-h-[90dvh] flex items-center justify-center p-4 mt-16 relative overflow-hidden">
-
       {/* Subtle ambient background */}
       <div className="fixed inset-0 -z-10">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(255,255,255,0.03)_0%,_transparent_60%)]" />
@@ -105,7 +140,8 @@ const Questions = () => {
             Assessment Sheet
           </h1>
           <p className="text-neutral-500 text-sm font-light">
-            Answer each question carefully · {totalCount} question{totalCount !== 1 ? 's' : ''}
+            Answer each question carefully · {totalCount} question
+            {totalCount !== 1 ? "s" : ""}
           </p>
         </motion.div>
 
@@ -117,7 +153,9 @@ const Questions = () => {
           className="mb-8"
         >
           <div className="flex items-center justify-between mb-2">
-            <span className="text-neutral-500 text-xs font-light uppercase tracking-widest">Progress</span>
+            <span className="text-neutral-500 text-xs font-light uppercase tracking-widest">
+              Progress
+            </span>
             <span className="text-neutral-400 text-xs font-light">
               {answeredCount} / {totalCount}
             </span>
@@ -126,8 +164,13 @@ const Questions = () => {
             <motion.div
               className="h-full bg-white/40 rounded-full"
               initial={{ width: 0 }}
-              animate={{ width: totalCount > 0 ? `${(answeredCount / totalCount) * 100}%` : '0%' }}
-              transition={{ duration: 0.5, ease: 'easeOut' }}
+              animate={{
+                width:
+                  totalCount > 0
+                    ? `${(answeredCount / totalCount) * 100}%`
+                    : "0%",
+              }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
             />
           </div>
         </motion.div>
@@ -136,10 +179,12 @@ const Questions = () => {
         <form onSubmit={handleSubmit}>
           <div className="space-y-5">
             {questions.map((quest, index) => {
-              const questionText = typeof quest === 'string' ? quest : quest.question;
-              const questionType = typeof quest === 'object' ? quest.type : null;
+              const questionText =
+                typeof quest === "string" ? quest : quest.question;
+              const questionType =
+                typeof quest === "object" ? quest.type : null;
               const isFocused = activeQuestion === index;
-              const hasAnswer = answer[`Answer${index + 1}`]?.trim().length > 0;
+              const hasAnswer = answer[`${index + 1}`]?.trim().length > 0;
 
               return (
                 <motion.div
@@ -153,24 +198,26 @@ const Questions = () => {
                   }}
                   className={`relative bg-white/[0.03] border rounded-xl transition-all duration-300 ${
                     isFocused
-                      ? 'border-white/20 bg-white/[0.05] shadow-[0_0_30px_rgba(255,255,255,0.04)]'
+                      ? "border-white/20 bg-white/[0.05] shadow-[0_0_30px_rgba(255,255,255,0.04)]"
                       : hasAnswer
-                        ? 'border-white/[0.12] bg-white/[0.04]'
-                        : 'border-white/[0.08]'
+                        ? "border-white/[0.12] bg-white/[0.04]"
+                        : "border-white/[0.08]"
                   }`}
                 >
                   {/* Question Header */}
                   <div className="px-5 pt-5 pb-3">
                     <div className="flex items-start gap-3">
                       {/* Number */}
-                      <div className={`flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center text-xs font-medium transition-all duration-300 ${
-                        isFocused
-                          ? 'bg-white text-black'
-                          : hasAnswer
-                            ? 'bg-white/15 text-white/80'
-                            : 'bg-white/[0.06] text-neutral-500 border border-white/[0.08]'
-                      }`}>
-                        {hasAnswer ? '✓' : index + 1}
+                      <div
+                        className={`flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center text-xs font-medium transition-all duration-300 ${
+                          isFocused
+                            ? "bg-white text-black"
+                            : hasAnswer
+                              ? "bg-white/15 text-white/80"
+                              : "bg-white/[0.06] text-neutral-500 border border-white/[0.08]"
+                        }`}
+                      >
+                        {hasAnswer ? "✓" : index + 1}
                       </div>
 
                       {/* Question Text + Type */}
@@ -181,7 +228,7 @@ const Questions = () => {
                           </span>
                         )}
                         <label
-                          htmlFor={`Answer${index + 1}`}
+                          htmlFor={`${index + 1}`}
                           className="block text-white/90 text-sm leading-relaxed font-light cursor-pointer"
                         >
                           {questionText}
@@ -196,22 +243,21 @@ const Questions = () => {
                   {/* Answer Area */}
                   <div className="p-5 pt-4 relative">
                     <textarea
-                      id={`Answer${index + 1}`}
-                      value={answer[`Answer${index + 1}`] || ""}
-                      name={`Answer${index + 1}`}
+                      id={`${index + 1}`}
+                      value={answer[`${index + 1}`] || ""}
+                      name={`${index + 1}`}
                       onChange={handleInputChange}
                       onKeyDown={handleKeyDown}
                       onFocus={() => setActiveQuestion(index)}
                       onBlur={() => setActiveQuestion(null)}
                       placeholder="Write your answer here..."
-                      
                       rows={4}
                       className="w-full bg-transparent text-white/80 text-sm leading-relaxed placeholder-neutral-400 focus:outline-none resize-none font-light question-textarea"
                     />
                     {/* Character count */}
                     <div className="flex items-center justify-end mt-1">
                       <span className="text-neutral-600 text-[10px] font-light tabular-nums">
-                        {answer[`Answer${index + 1}`]?.length || 0} chars
+                        {answer[`${index + 1}`]?.length || 0} chars
                       </span>
                     </div>
                   </div>
@@ -224,7 +270,10 @@ const Questions = () => {
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.3 + questions.length * 0.08 + 0.1 }}
+            transition={{
+              duration: 0.4,
+              delay: 0.3 + questions.length * 0.08 + 0.1,
+            }}
             className="mt-8 space-y-4"
           >
             <button
@@ -247,10 +296,10 @@ const Questions = () => {
 
             {/* Hint */}
             <p className="text-center text-neutral-600 text-xs font-light">
-              Press{' '}
+              Press{" "}
               <kbd className="px-1.5 py-0.5 bg-white/[0.04] border border-white/[0.08] rounded text-[10px] font-mono text-neutral-400">
                 Ctrl + Enter
-              </kbd>{' '}
+              </kbd>{" "}
               to submit
             </p>
           </motion.div>

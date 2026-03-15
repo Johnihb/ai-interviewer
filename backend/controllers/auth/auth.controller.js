@@ -3,8 +3,6 @@ import serverResponse from "../../lib/action/api_Response.js";
 import setCookies from "../../lib/cookie.js";
 
 export const signupController = async (req, res) => {
-  console.log("user is here");
-  console.log(req.body);
   try {
     const {  email, password, confirmPassword } = req.body;
     const name = req.body?.name.trim();
@@ -99,9 +97,7 @@ export const checkUsername = async (req, res) => {
 
 
     
-    console.log(name)
     const user = await User.findOne({ name }).select("name").lean();
-    console.log(user)
     if (user) {
       return res.status(200).json(serverResponse(200, 300 , {exist:true} ));
     }

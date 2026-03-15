@@ -5,8 +5,10 @@ import toast from "react-hot-toast";
 export const useGeminiStore = create((set) => ({
   statusError : ' ',
   questions : [] ,
+  setQuestions : (questions) => set({ questions }),
   loading : false ,
-  feedback : [],
+  feedback : {},
+  setFeedback : (feedback) => set({ feedback }),
 
 
    getQuestions : async(formData)=>{
@@ -14,12 +16,7 @@ export const useGeminiStore = create((set) => ({
     try {
 
       const response = await axios.post("/gemini/vacancy" , formData) ;
-      
-      console.log(response.data)
-
-      set({ questions: response?.data?.user?.questions });
-
-      toast.success("Questions fetched successfully");
+      set({ questions: response?.data?.user?.questions , feedback: response?.data?.user?.qaResult });
     } catch (error) {
       console.log("error" , error)
       if(error?.response?.status === 500){
@@ -35,8 +32,7 @@ export const useGeminiStore = create((set) => ({
   postAnswer : async(formData)=>{
     set({loading : true , feedback : [] , statusError : ' '})
     try {
-      console.log('formdata :',formData)
-      const response = await axios.post("/gemini/answer" , {answer : formData}) ;
+      const response = await axios.post("/gemini/evaluate-answer" , {answers : formData}) ;
       let result = response?.data?.result
       set({ feedback: result });
       toast.success("Answer checked successfully");
@@ -46,10 +42,11 @@ export const useGeminiStore = create((set) => ({
         return set({statusError : "Internal Server Error"})
       }
       
-      set({feedback :['feedback 1' , 'feedback 2' , 'feedback 3']})
+      set({feedback :[]})
       toast.error("Failed to fetch fee dback");
     }finally {
-      set({loading : false , question : [] , answer : []})
+      // set({loading : false , question : [] , answer : []})
+      set({loading : false })
     }
   }
 }))

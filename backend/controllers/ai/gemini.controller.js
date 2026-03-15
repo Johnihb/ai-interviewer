@@ -113,15 +113,18 @@ export const generateQuestions = async (req, res) => {
     const alreadyExistQuestion = await InterviewSession.findOne({
       userId: req.user._id,
       status: "pending",
-    });
+    }).select("questions , role , qaStatus , qaResult ").lean();
+
 
     if (alreadyExistQuestion) {
       return res.status(200).json(
-        serverResponse(400, 253, {
+        serverResponse(400, 400, {
           sessionId: alreadyExistQuestion._id,
           questions: alreadyExistQuestion.questions,
           role: alreadyExistQuestion.role,
           task: "Please complete the existing one before starting new one.<3",
+          qaStatus: alreadyExistQuestion.qaStatus,
+          qaResult: alreadyExistQuestion.qaResult,
         }),
       );
     }
@@ -251,8 +254,9 @@ export const fetchExistingQuestion = async (req, res) => {
       userId,
       status: "pending",
     })
-      .select("questions")
+      .select("questions , qaStatus , qaResult")
       .lean();
+
 
     if (!dbQuestions) {
       return res.status(404).json(serverResponse(404, 401));
@@ -260,7 +264,7 @@ export const fetchExistingQuestion = async (req, res) => {
 
     return res
       .status(200)
-      .json(serverResponse(200, 256, { questions: dbQuestions?.questions }));
+      .json(serverResponse(200, 256, { questions: dbQuestions?.questions , qaStatus: dbQuestions?.qaStatus , qaResult: dbQuestions?.qaResult}));
   } catch (error) {
     return res.status(500).json(serverResponse(500, 1));
   }

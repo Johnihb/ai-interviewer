@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Home, LogIn, LogOut, UserPlus, FileText, LayoutDashboard, Menu, X } from 'lucide-react';
+import { Home, LogIn, LogOut, UserPlus, FileText, LayoutDashboard, Menu, X, FileQuestionMark } from 'lucide-react';
 import { Link } from "react-router-dom";
 import { useUserStore } from "../stores/userStore";
 
@@ -65,9 +65,9 @@ export default function Navbar() {
           {user && (
             <div className="hidden md:flex items-center gap-1.5">
               <NavLink
-                to="/"
-                icon={<Home className="w-4 h-4" />}
-                text="Home"
+                to="/questions"
+                icon={<FileQuestionMark  className="w-4 h-4" />}
+                text="Questions"
               />
               <NavLink
                 to="/skillsForm"
@@ -177,6 +177,12 @@ export default function Navbar() {
                   to="/dashboard"
                   icon={<LayoutDashboard className="w-4 h-4" />}
                   text="Dashboard"
+                  onClick={closeMobileMenu}
+                />
+                <MobileNavLink
+                  to="/questions"
+                  icon={<FileQuestionMark className="w-4 h-4" />}
+                  text="Questions"
                   onClick={closeMobileMenu}
                 />
                 <MobileNavButton

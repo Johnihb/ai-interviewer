@@ -29,7 +29,6 @@ export default function CyberpunkSignup() {
     // Call the signup function from userStore
     await signup(formData)
 
-    console.log("Form submitted:", formData)
     setIsLoading(false)
   }
 
@@ -44,7 +43,6 @@ export default function CyberpunkSignup() {
       axios.post('/auth/check-username', { name: formData.name }, { timeout: 2000 })
         .then((response) => {
           if (response.status === 200) {
-            console.log('Username is available', response.data);
             setUsernameExists(response.data.user.exist);
           }
         }).catch((error) => {
