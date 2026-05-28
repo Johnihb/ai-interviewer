@@ -46,7 +46,7 @@ const Questions = () => {
     return () => {
       document.removeEventListener("visibilitychange", handleBlur);
     };
-  }, [document.visibilityState]);
+  }, []);
 
   if (loading) {
     return (

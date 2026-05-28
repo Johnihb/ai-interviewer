@@ -7,16 +7,17 @@ export const useGeminiStore = create((set) => ({
   questions : [] ,
   setQuestions : (questions) => set({ questions }),
   loading : false ,
-  feedback : {},
+  feedback : null,
   setFeedback : (feedback) => set({ feedback }),
-
+  cvResult : null,
+  setCvResult : (cvResult) => set({ cvResult }),
 
    getQuestions : async(formData)=>{
-    set({loading : true , feedback : [] , statusError : ' '})
+    set({loading : true , feedback : null , statusError : ' '})
     try {
 
       const response = await axios.post("/gemini/vacancy" , formData) ;
-      set({ questions: response?.data?.user?.questions , feedback: response?.data?.user?.qaResult });
+      set({ questions: response?.data?.user?.questions , feedback: response?.data?.user?.qaResult ?? null });
     } catch (error) {
       console.log("error" , error)
       if(error?.response?.status === 500){
@@ -30,7 +31,7 @@ export const useGeminiStore = create((set) => ({
   },
 
   postAnswer : async(formData)=>{
-    set({loading : true , feedback : [] , statusError : ' '})
+    set({loading : true , feedback : null , statusError : ' '})
     try {
       const response = await axios.post("/gemini/evaluate-answer" , {answers : formData}) ;
       let result = response?.data?.result
@@ -42,11 +43,13 @@ export const useGeminiStore = create((set) => ({
         return set({statusError : "Internal Server Error"})
       }
       
-      set({feedback :[]})
+      set({feedback : null})
       toast.error("Failed to fetch fee dback");
     }finally {
       // set({loading : false , question : [] , answer : []})
       set({loading : false })
     }
-  }
+  },
+
+
 }))

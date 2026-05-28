@@ -4,3 +4,8 @@ node_modules
 uploads/*
 .txt
 *.traineddata
+
+.vscode
+*.png
+*.jpg
+*.pdf

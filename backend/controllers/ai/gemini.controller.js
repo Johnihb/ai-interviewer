@@ -51,15 +51,29 @@ export const evaluateCV = async (req, res) => {
       return res.status(400).json(serverResponse(400, 500, "No file uploaded"));
     }
 
-    if (req.body.role.length > 20)
+ 
+    const interviewSession = await InterviewSession.findOne({
+      userId: req.user._id,
+      status: "pending",
+    }).select('cvResult , cvStatus').lean();
+
+
+    if (!interviewSession){
       return res.status(400).json(serverResponse(400, 501));
+    }
+
+    if(interviewSession?.cvStatus === "reviewed"){
+      return res.status(200).json(serverResponse(400, 502 , {
+         session: interviewSession,
+      }));
+    }
 
     let pdf = await fs.promises.readFile(req.file.path, { encoding: "base64" });
 
     const humanPrompt = new HumanMessage([
       {
         type: "text",
-        text: `Please rate this CV for a ${req.body.role} role: `,
+        text: `Please rate this CV for a ${interviewSession.role} role: `,
       },
       {
         type: "media",
@@ -76,7 +90,7 @@ export const evaluateCV = async (req, res) => {
       { userId: req.user._id, status: "pending", cvStatus: "pending" },
       { cvStatus: "reviewed", cvResult: tunedResponse },
       { new: true },
-    ).lean();
+    ).select('cvResult , cvStatus').lean();
 
     if (!updatedSession) {
       return res.status(404).json(serverResponse(404, 1));
@@ -86,8 +100,10 @@ export const evaluateCV = async (req, res) => {
       .status(200)
       .json(
         serverResponse(200, 252, {
-          session: updatedSession,
-          response: tunedResponse,
+          session: {
+            cvResult: updatedSession?.cvResult,
+            cvStatus: updatedSession?.cvStatus,
+          },
         }),
       );
   } catch (error) {
@@ -247,7 +263,7 @@ OUTPUT FORMAT (strict JSON, no markdown, no extra text):
   }
 };
 
-export const fetchExistingQuestion = async (req, res) => {
+export const existingQuestion = async (req, res) => {
   const userId = req.user._id;
   try {
     const dbQuestions = await InterviewSession.findOne({
@@ -367,3 +383,18 @@ OUTPUT FORMAT (strict JSON, no markdown):
     res.status(500).json(serverResponse(500, 500));
   }
 };
+
+
+export const existingCVResult = async (req,res)=>{
+  console.log('moshi mosh')
+  
+  try {
+    const response =await InterviewSession.findOne({userId : req.user._id}).select("cvResult , cvStatus").lean()
+
+    console.log('response' , response)
+    return res.status(200).json(serverResponse(200, 255, response))
+  
+  } catch (error) {
+    return res.status(500).json(serverResponse(500, 500))
+  }
+}
