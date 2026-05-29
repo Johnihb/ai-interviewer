@@ -19,7 +19,6 @@ export const useGeminiStore = create((set) => ({
       const response = await axios.post("/gemini/vacancy" , formData) ;
       set({ questions: response?.data?.user?.questions , feedback: response?.data?.user?.qaResult ?? null });
     } catch (error) {
-      console.log("error" , error)
       if(error?.response?.status === 500){
         return set({statusError : "Internal Server Error"})
       }     
@@ -38,7 +37,6 @@ export const useGeminiStore = create((set) => ({
       set({ feedback: result });
       toast.success("Answer checked successfully");
     } catch (error) {
-      console.log("error" , error)
       if(error?.response?.status === 500){
         return set({statusError : "Internal Server Error"})
       }

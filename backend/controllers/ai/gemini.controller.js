@@ -386,12 +386,10 @@ OUTPUT FORMAT (strict JSON, no markdown):
 
 
 export const existingCVResult = async (req,res)=>{
-  console.log('moshi mosh')
   
   try {
     const response =await InterviewSession.findOne({userId : req.user._id}).select("cvResult , cvStatus").lean()
 
-    console.log('response' , response)
     return res.status(200).json(serverResponse(200, 255, response))
   
   } catch (error) {

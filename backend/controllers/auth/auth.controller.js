@@ -28,7 +28,6 @@ export const signupController = async (req, res) => {
 
     res.status(201).json(serverResponse(201, 200, user));
   } catch (error) {
-    console.log(error);
     res.status(500).json(serverResponse(500, 301));
   }
 };
@@ -56,7 +55,6 @@ export const loginController = async (req, res) => {
     };
     res.status(200).json(serverResponse(201, 200, user));
   } catch (error) {
-    console.log(error);
     res.status(500).json(serverResponse(500, 3));
   }
 };
@@ -66,7 +64,6 @@ export const getUser = async (req, res) => {
     const { user } = req;
     res.status(200).json(serverResponse(200, 203, user));
   } catch (error) {
-    console.log(error);
     res.status(500).json(500, 304);
   }
 };
@@ -80,7 +77,6 @@ export const logoutController = async (req, res) => {
     });
     res.status(200).json(serverResponse(200, 201));
   } catch (error) {
-    console.log(error);
     res.status(500).json(serverResponse(500, 2));
   }
 };
@@ -103,7 +99,6 @@ export const checkUsername = async (req, res) => {
     }
     return res.status(200).json(serverResponse(404, 304 , {exist:false}));
   } catch (error) {
-    console.log(error);
     res.status(500).json(serverResponse(500, 304));
   }
 };
