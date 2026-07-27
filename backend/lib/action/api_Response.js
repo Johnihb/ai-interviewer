@@ -1,4 +1,4 @@
- const  serverResponse = (code ,subcode ,user)=>{
+ const serverResponse = (code, subcode, data) => {
    const message ={
      200: "OK",
      201: "Created",
@@ -52,7 +52,7 @@
 
 
 
-  return user ? {...defaultResponse , user} : defaultResponse
+  return data !== undefined ? { ...defaultResponse, data } : defaultResponse
 
 
 }

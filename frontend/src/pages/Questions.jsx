@@ -6,29 +6,13 @@ import { FileText, Send, Loader2, Clock, ChevronDown } from "lucide-react";
 import { motion } from "motion/react";
 import { toast } from "react-hot-toast";
 import { useRef } from "react";
-import axios from "../lib/axios";
 
 const Questions = () => {
-  const { questions, postAnswer, feedback, setFeedback ,statusError , setQuestions } =useGeminiStore();
+  const { questions, postAnswer, feedback, statusError, loading } = useGeminiStore();
   const [answer, setAnswer] = useState({});
   const [activeQuestion, setActiveQuestion] = useState(null);
   const answerAlreadySubmittedRef = useRef(false);
-  const [loading , setLoading] = useState(false)
-  useEffect(()=>{
-    if(questions?.length > 0) return 
-    setLoading(true)
-    axios.get('/gemini/existing-question').then(res => {
-      setQuestions(res?.data?.user?.questions)
-      if(res?.data?.user?.qaStatus === 'evaluated'){
-      setFeedback(res?.data?.user?.qaResult)
-    }
-      return
-    }).catch(()=> toast.error('Failed to fetch questions'))
-    .finally(() => setLoading(false))
-  },[])
-
-
-    //  visibilitychange -> hidden & visible
+  //  visibilitychange -> hidden & visible
   // hidden - when user leaves the page
   // visible - when user returns to the page
   const handleBlur = () => {
@@ -47,6 +31,10 @@ const Questions = () => {
       document.removeEventListener("visibilitychange", handleBlur);
     };
   }, []);
+
+  if (!questions.length) return <div className="min-h-svh border-amber-300 text-center pt-20  text-amber-200">
+    No questions available. Please generate new questions to start the assessment.
+  </div>;
 
   if (loading) {
     return (
@@ -184,7 +172,7 @@ const Questions = () => {
               const questionType =
                 typeof quest === "object" ? quest.type : null;
               const isFocused = activeQuestion === index;
-              const hasAnswer = answer[`${index + 1}`]?.trim().length > 0;
+              const hasAnswer = answer[`${index + 1}`]?.trim()?.length > 0;
 
               return (
                 <motion.div

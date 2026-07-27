@@ -1,11 +1,11 @@
-import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import Navbar from "./components/Navbar";
 import { useUserStore } from "./stores/userStore";
 import { lazy, Suspense } from "react";
 import { useEffect } from "react";
 import { useState } from "react";
-import axios from "./lib/axios";
+import { useGeminiStore } from "./stores/geminiStore";
 
 // Lazy loaded pages
 const Signup = lazy(() => import("./pages/Signup"));
@@ -18,35 +18,9 @@ const Dashboard = lazy(() => import("./pages/Dashboard"));
 const CV = lazy(() => import("./pages/CV"));
 const CVResult = lazy(() => import("./pages/CVResult"));
 
+
 const CVResultRoute = () => {
-  const [result, setResult] = useState(null);
-  const [loadingResult, setLoadingResult] = useState(true);
-  const [redirectTo, setRedirectTo] = useState(null);
-
-  useEffect(() => {
-    axios
-      .get("/gemini/existing-cvResult")
-      .then((res) => {
-        const status =
-          res.data?.user?.cvStatus || res.data?.user?.session?.cvStatus || null;
-        const cvResult =
-          res.data?.user?.session?.cvResult || res.data?.user?.cvResult || null;
-
-        if (status === "reviewed" && cvResult) {
-          setResult(cvResult);
-        } else {
-          setRedirectTo("/cv");
-        }
-      })
-      .catch((err) => {
-        console.error("Failed to load CV result:", err);
-        setRedirectTo("/cv");
-      })
-      .finally(() => setLoadingResult(false));
-  }, []);
-
-  if (redirectTo) return <Navigate to={redirectTo} replace />;
-  if (loadingResult) return <div>Loading CV result...</div>;
+  const result = useGeminiStore((state) => state.cvResult);
   if (!result) return <Navigate to="/cv" replace />;
 
   return <CVResult data={result} />;

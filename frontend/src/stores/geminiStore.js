@@ -2,22 +2,37 @@ import axios from "../lib/axios";
 import {create} from "zustand";
 import toast from "react-hot-toast";
 
-export const useGeminiStore = create((set) => ({
+const initialState = {
   statusError : ' ',
   questions : [] ,
-  setQuestions : (questions) => set({ questions }),
   loading : false ,
   feedback : null,
-  setFeedback : (feedback) => set({ feedback }),
   cvResult : null,
-  setCvResult : (cvResult) => set({ cvResult }),
+  sessionLoaded: false,
+};
+
+export const useGeminiStore = create((set) => ({
+  ...initialState,
+  setSession: (session) => set({
+    questions: session?.questions ?? [],
+    feedback: session?.qaStatus === "evaluated" ? session.qaResult : null,
+    cvResult: session?.cvStatus === "reviewed" ? session.cvResult : null,
+    sessionLoaded: true,
+  }),
+  reset: () => set(initialState),
 
    getQuestions : async(formData)=>{
     set({loading : true , feedback : null , statusError : ' '})
     try {
 
       const response = await axios.post("/gemini/vacancy" , formData) ;
-      set({ questions: response?.data?.user?.questions , feedback: response?.data?.user?.qaResult ?? null });
+      const session = response.data.data;
+      set({
+        questions: session.questions,
+        feedback: session.qaStatus === "evaluated" ? session.qaResult : null,
+        cvResult: session.cvStatus === "reviewed" ? session.cvResult : null,
+        sessionLoaded: true,
+      });
     } catch (error) {
       if(error?.response?.status === 500){
         return set({statusError : "Internal Server Error"})
@@ -33,8 +48,13 @@ export const useGeminiStore = create((set) => ({
     set({loading : true , feedback : null , statusError : ' '})
     try {
       const response = await axios.post("/gemini/evaluate-answer" , {answers : formData}) ;
-      let result = response?.data?.result
-      set({ feedback: result });
+      const session = response.data.data;
+      set({
+        feedback: session.qaResult,
+        questions: session.questions,
+        cvResult: session.cvStatus === "reviewed" ? session.cvResult : null,
+        sessionLoaded: true,
+      });
       toast.success("Answer checked successfully");
     } catch (error) {
       if(error?.response?.status === 500){
@@ -49,5 +69,22 @@ export const useGeminiStore = create((set) => ({
     }
   },
 
+  evaluateCV: async (formData) => {
+    set({ loading: true, statusError: ' ' });
+    try {
+      const response = await axios.post("/gemini/evaluate-cv", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      const { cvResult } = response.data.data;
+      set({ cvResult, sessionLoaded: true });
+      return cvResult;
+    } catch (error) {
+      if (error?.response?.status === 500) set({ statusError: "Internal Server Error" });
+      toast.error("Failed to evaluate CV");
+      throw error;
+    } finally {
+      set({ loading: false });
+    }
+  },
 
 }))

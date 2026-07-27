@@ -43,7 +43,7 @@ export default function CyberpunkSignup() {
       axios.post('/auth/check-username', { name: formData.name }, { timeout: 2000 })
         .then((response) => {
           if (response.status === 200) {
-            setUsernameExists(response.data.user.exist);
+            setUsernameExists(response.data.data.exist);
           }
         }).catch((error) => {
           console.warn(error);

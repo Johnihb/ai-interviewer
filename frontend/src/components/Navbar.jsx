@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Home, LogIn, LogOut, UserPlus, FileText, Menu, X, FileQuestionMark, TextSearch } from 'lucide-react';
+import { Home, LogIn, LogOut, UserPlus, FileText, Menu, X, FileQuestionMark, TextSearch, Bot } from 'lucide-react';
 import { Link } from "react-router-dom";
 import { useUserStore } from "../stores/userStore";
 
@@ -79,6 +79,11 @@ export default function Navbar() {
                 icon={<TextSearch  className="w-4 h-4" />}
                 text="C.V."
               />
+              <NavLink
+                to="/interview"
+                icon={<Bot className="w-4 h-4" />}
+                text="Interview"
+              />
 
               {/* User Profile */}
               <div className="flex items-center gap-2.5 px-3 py-2 ml-1 bg-white/[0.04] border border-white/[0.08] rounded-xl">
@@ -140,6 +145,7 @@ export default function Navbar() {
                   text="Sign Up"
                   onClick={closeMobileMenu}
                 />
+             
               </div>
             )}
 
@@ -183,6 +189,12 @@ export default function Navbar() {
                   to="/questions"
                   icon={<FileQuestionMark className="w-4 h-4" />}
                   text="Questions"
+                  onClick={closeMobileMenu}
+                />
+                <MobileNavLink
+                  to="/interview"
+                  icon={<Bot className="w-4 h-4" />}
+                  text="Interview"
                   onClick={closeMobileMenu}
                 />
                 <MobileNavButton

@@ -10,7 +10,6 @@ import {
 } from "lucide-react";
 import { motion , AnimatePresence } from "motion/react";
 import toast from "react-hot-toast";
-import axios from "../lib/axios";
 import { useEffect } from "react";
 import CVResult from "./CVResult";
 import { useGeminiStore } from "../stores/geminiStore";
@@ -257,7 +256,7 @@ const FieldLabel = ({ icon: Icon, children }) => (
 
 // ─── Main page ────────────────────────────────────────────────────────────────
 export default function CV() {
-  const {cvResult, setCvResult} = useGeminiStore();
+  const { cvResult, evaluateCV } = useGeminiStore();
   const navigate = useNavigate();
   const inputRef = useRef(null);
   const [ result , setResult ] = useState(null);
@@ -265,27 +264,9 @@ export default function CV() {
   const [file, setFile] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  // !For initial Loading of existing CV result if any
   useEffect(()=>{
-    if(cvResult){
-      setResult(cvResult)
-      return ;
-    }
-
-
-    axios.get('/gemini/existing-cvResult')
-      .then(res=>{
-      const resultStatus = res.data?.user?.cvStatus || res.data?.user?.session?.cvStatus || null
-      if(resultStatus === "reviewed"){
-        const cvResponse = res?.data?.user?.session?.cvResult || res.data?.user?.cvResult || null
-        setResult(cvResponse)
-        setCvResult(cvResponse)
-      }
-    })
-    .catch(err => {
-      console.error('Failed to fetch existing CV result:', err);
-    });
-  },[cvResult, setCvResult])
+    setResult(cvResult);
+  }, [cvResult]);
 
 
   // *redirecting to result page if result is already there   
@@ -313,13 +294,7 @@ export default function CV() {
       const formData = new FormData();
       formData.append("cv", file);
 
-      const res = await axios.post('/gemini/evaluate-cv', formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      setResult(res.data?.user?.session?.cvResult || res.data?.user?.cvResult || null);
+      setResult(await evaluateCV(formData));
 
       toast.success("CV uploaded successfully! 🎉", {
         style: { background: "#1a1a1a", color: "#fff", border: "1px solid rgba(255,255,255,0.08)" },

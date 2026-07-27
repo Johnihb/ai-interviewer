@@ -1,6 +1,7 @@
 import {create} from "zustand";
 import axios from "../lib/axios";
 import toast  from "react-hot-toast";
+import { useGeminiStore } from "./geminiStore";
 
 export const useUserStore = create((set) => ({
     user: null,
@@ -10,9 +11,13 @@ export const useUserStore = create((set) => ({
         set({ loading: true });
         try {
         const response = await axios.get("/auth/me");
-        set({ user: response.data.user });
+        const { user, session } = response.data.data;
+        set({ user });
+        useGeminiStore.getState().setSession(session);
+        return user;
       } catch (error) {
         console.error("Failed to fetch user:", error);
+        set({ user: null });
       }finally {
         set({ loading: false });
       }
@@ -23,7 +28,9 @@ export const useUserStore = create((set) => ({
         try {
         const response = await axios.post("/auth/signup", formData);
         toast.success("Signup successful");
-        set({ user: response.data.user });
+        const { user, session } = response.data.data;
+        set({ user });
+        useGeminiStore.getState().setSession(session);
       } catch (error) {
         console.error("Signup failed:", error);
         toast.error("Signup failed");
@@ -37,7 +44,9 @@ export const useUserStore = create((set) => ({
         try {
         const response = await axios.post("/auth/login", formData);
         toast.success("Login successful");
-        set({ user: response.data.user });
+        const { user, session } = response.data.data;
+        set({ user });
+        useGeminiStore.getState().setSession(session);
       } catch (error) {
         console.error("Login failed:", error);
         toast.error("Login failed" , error.message );
@@ -50,6 +59,7 @@ export const useUserStore = create((set) => ({
       try {
         await axios.post("/auth/logout");
         set({ user: null });
+        useGeminiStore.getState().reset();
       } catch (error) {
         console.error("Logout failed:", error);
         toast.error("Logout failed");

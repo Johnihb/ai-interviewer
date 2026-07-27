@@ -1,6 +1,7 @@
 import User from "../../models/user.model.js";
 import serverResponse from "../../lib/action/api_Response.js";
 import setCookies from "../../lib/cookie.js";
+import InterviewSession from "../../models/interviewSession.model.js";
 
 export const signupController = async (req, res) => {
   try {
@@ -26,7 +27,7 @@ export const signupController = async (req, res) => {
       _id: user._id,
     };
 
-    res.status(201).json(serverResponse(201, 200, user));
+    res.status(201).json(serverResponse(201, 200, { user, session: null }));
   } catch (error) {
     res.status(500).json(serverResponse(500, 301));
   }
@@ -53,7 +54,14 @@ export const loginController = async (req, res) => {
       email: user.email,
       _id: user._id,
     };
-    res.status(200).json(serverResponse(201, 200, user));
+    const session = await InterviewSession.findOne({
+      userId: user._id,
+      status: "pending",
+    })
+      .select("role questions qaStatus qaResult cvStatus cvResult")
+      .lean();
+
+    res.status(200).json(serverResponse(200, 201, { user, session }));
   } catch (error) {
     res.status(500).json(serverResponse(500, 3));
   }
@@ -62,9 +70,20 @@ export const loginController = async (req, res) => {
 export const getUser = async (req, res) => {
   try {
     const { user } = req;
-    res.status(200).json(serverResponse(200, 203, user));
+    const session = await InterviewSession.findOne({
+      userId: user._id,
+      status: "pending",
+    })
+      .select("role questions qaStatus qaResult cvStatus cvResult")
+      .lean();
+
+    return res.status(200).json(serverResponse(200, 203, {
+      user: { name: user.name, email: user.email, _id: user._id },
+      session,
+    }));
   } catch (error) {
-    res.status(500).json(500, 304);
+    console.log('error',error);
+    return res.status(500).json(serverResponse(500, 304));
   }
 };
 
@@ -82,6 +101,7 @@ export const logoutController = async (req, res) => {
 };
 
 export const checkUsername = async (req, res) => {
+  console.log("hlo");
   try {
 
     const name  = req.body?.name.trim();

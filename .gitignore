@@ -9,3 +9,6 @@ uploads/*
 *.png
 *.jpg
 *.pdf
+.agents
+skills-lock.json
+.kombai

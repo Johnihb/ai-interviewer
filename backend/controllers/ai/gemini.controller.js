@@ -100,10 +100,8 @@ export const evaluateCV = async (req, res) => {
       .status(200)
       .json(
         serverResponse(200, 252, {
-          session: {
-            cvResult: updatedSession?.cvResult,
-            cvStatus: updatedSession?.cvStatus,
-          },
+          cvResult: updatedSession.cvResult,
+          cvStatus: updatedSession.cvStatus,
         }),
       );
   } catch (error) {
@@ -129,18 +127,20 @@ export const generateQuestions = async (req, res) => {
     const alreadyExistQuestion = await InterviewSession.findOne({
       userId: req.user._id,
       status: "pending",
-    }).select("questions , role , qaStatus , qaResult ").lean();
+    }).select("role questions qaStatus qaResult cvStatus cvResult").lean();
 
 
     if (alreadyExistQuestion) {
       return res.status(200).json(
-        serverResponse(400, 400, {
-          sessionId: alreadyExistQuestion._id,
+        serverResponse(200, 400, {
+          _id: alreadyExistQuestion._id,
           questions: alreadyExistQuestion.questions,
           role: alreadyExistQuestion.role,
           task: "Please complete the existing one before starting new one.<3",
           qaStatus: alreadyExistQuestion.qaStatus,
           qaResult: alreadyExistQuestion.qaResult,
+          cvStatus: alreadyExistQuestion.cvStatus,
+          cvResult: alreadyExistQuestion.cvResult,
         }),
       );
     }
@@ -230,6 +230,9 @@ OUTPUT FORMAT (strict JSON, no markdown, no extra text):
     { "id": 2, "type": "technical",  "question": "..." }
   ]
 }
+
+# Warning :
+  Don't use the date from the time your knowledge was cutoff always use internet or other approach to evaluate .
 `);
 
     const llmResponse = await model.invoke([
@@ -246,9 +249,13 @@ OUTPUT FORMAT (strict JSON, no markdown, no extra text):
     });
     return res.status(200).json(
       serverResponse(200, 254, {
-        sessionId: questionSession._id,
-        questions: questionSession.questions,
+        _id: questionSession._id,
         role: questionSession.role,
+        questions: questionSession.questions,
+        qaStatus: questionSession.qaStatus,
+        qaResult: questionSession.qaResult,
+        cvStatus: questionSession.cvStatus,
+        cvResult: questionSession.cvResult,
       }),
     );
   } catch (error) {
@@ -270,17 +277,17 @@ export const existingQuestion = async (req, res) => {
       userId,
       status: "pending",
     })
-      .select("questions , qaStatus , qaResult")
+      .select("role questions qaStatus qaResult cvStatus cvResult")
       .lean();
 
 
     if (!dbQuestions) {
-      return res.status(404).json(serverResponse(404, 401));
+      return res.status(200).json(serverResponse(400, 401));
     }
 
     return res
       .status(200)
-      .json(serverResponse(200, 256, { questions: dbQuestions?.questions , qaStatus: dbQuestions?.qaStatus , qaResult: dbQuestions?.qaResult}));
+      .json(serverResponse(200, 256, dbQuestions));
   } catch (error) {
     return res.status(500).json(serverResponse(500, 1));
   }
@@ -314,7 +321,7 @@ export const evaluateAnswer = async (req, res) => {
       .join("\n\n---\n\n");
 
     const EvaluationSystemPrompt = new SystemMessage(`
-You are a strict but fair senior interviewer evaluating answers for a ${interviewQuestion?.role || "Software Engineer"} role.
+You are a strict but fair senior interviewer evaluating answers for a ${interviewQuestion?.role || "Software Engineer"} role .
 
 SCORING GUIDE:
 - 9–10 → Exceptional
@@ -342,6 +349,12 @@ OUTPUT FORMAT (strict JSON, no markdown):
     "recommendation": "Hire | Maybe | No Hire"
   }
 }
+
+
+# Warning :
+  Don't use the date from the time your knowledge was cutoff always use internet or other approach to evaluate .
+
+
     `);
 
     const llmResponse = await model.invoke([
@@ -377,7 +390,7 @@ OUTPUT FORMAT (strict JSON, no markdown):
 
     res
       .status(200)
-      .json(serverResponse(200, 255, { session, response: evaluation }));
+      .json(serverResponse(200, 255, session));
   } catch (error) {
     console.error("Error evaluating answer:", error);
     res.status(500).json(serverResponse(500, 500));
