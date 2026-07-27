@@ -282,7 +282,7 @@ export const existingQuestion = async (req, res) => {
 
 
     if (!dbQuestions) {
-      return res.status(200).json(serverResponse(400, 401));
+      return res.status(404).json(serverResponse(400, 401));
     }
 
     return res

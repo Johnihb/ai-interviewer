@@ -82,9 +82,8 @@ export const getUser = async (req, res) => {
       session,
     }));
   } catch (error) {
-    console.log('error',error);
-    return res.status(500).json(serverResponse(500, 304));
-  }
+    console.error('getUser error:', error);
+    return res.status(500).json(serverResponse(500, 1));  }
 };
 
 export const logoutController = async (req, res) => {

@@ -32,11 +32,17 @@ const Questions = () => {
     };
   }, []);
 
+  if (loading) {
+    return (
+      <div className="min-h-[90dvh] flex items-center justify-center">
+        <Loader2 className="animate-spin w-8 h-8 text-neutral-400" />
+      </div>
+    );
+  }
+
   if (!questions.length) return <div className="min-h-svh border-amber-300 text-center pt-20  text-amber-200">
     No questions available. Please generate new questions to start the assessment.
-  </div>;
-
-  if (loading) {
+  </div>;  if (loading) {
     return (
       <div className="min-h-[90dvh] flex items-center justify-center">
         <Loader2 className="animate-spin w-8 h-8 text-neutral-400" />

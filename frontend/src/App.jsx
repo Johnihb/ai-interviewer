@@ -50,6 +50,7 @@ const App = () => {
         <Route path='/signup' element={user ? <Navigate to='/' /> : <Signup />} />
         <Route path='/skillsForm' element={user ? <SkillsForm /> : <Navigate to='/login' />} />
         <Route path='/questions' element={user ? <Questions /> : <Navigate to='/login' />} />
+        <Route path='/interview' element={user ? <Questions /> : <Navigate to='/login' />} />
         <Route path='/dashboard' element={user ? <Dashboard /> : <Navigate to='/login' />} />
         <Route path='/cv' element={user ? <CV /> : <Navigate to='/login' />} />
         <Route path='/cv-result' element={user ? <CVResultRoute /> : <Navigate to='/login' />} />

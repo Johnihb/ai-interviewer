@@ -6,8 +6,7 @@ dotenv.config();
 
   mongoose.connect(process.env.MONGO_URI).then(()=>{
   }).catch((err)=>{
-    console.log(err);
-    process.exit(1);
+    console.error("MongoDB connection error:", err.message);    process.exit(1);
   });
 
 export default mongoose;

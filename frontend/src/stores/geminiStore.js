@@ -27,6 +27,20 @@ export const useGeminiStore = create((set) => ({
 
       const response = await axios.post("/gemini/vacancy" , formData) ;
       const session = response.data.data;
+
+      // Guard: if server returned no session, surface a session-specific error
+      if (!session) {
+        set({
+          questions: [],
+          feedback: null,
+          cvResult: null,
+          sessionLoaded: false,
+          statusError: 'No active interview session',
+        });
+        toast.error("No active interview session found");
+        return;
+      }
+
       set({
         questions: session.questions,
         feedback: session.qaStatus === "evaluated" ? session.qaResult : null,
@@ -49,6 +63,20 @@ export const useGeminiStore = create((set) => ({
     try {
       const response = await axios.post("/gemini/evaluate-answer" , {answers : formData}) ;
       const session = response.data.data;
+
+      // Guard: surface session-specific error if no session returned
+      if (!session) {
+        set({
+          feedback: null,
+          questions: [],
+          cvResult: null,
+          sessionLoaded: false,
+          statusError: 'No active interview session',
+        });
+        toast.error("No active interview session found");
+        return;
+      }
+
       set({
         feedback: session.qaResult,
         questions: session.questions,
@@ -75,7 +103,14 @@ export const useGeminiStore = create((set) => ({
       const response = await axios.post("/gemini/evaluate-cv", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      const { cvResult } = response.data.data;
+      const session = response.data.data;
+      if (!session) {
+        set({ statusError: 'No active interview session' });
+        toast.error('No active interview session found');
+        throw new Error('No active interview session');
+      }
+
+      const { cvResult } = session;
       set({ cvResult, sessionLoaded: true });
       return cvResult;
     } catch (error) {
